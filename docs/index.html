@@ -230,11 +230,25 @@ python web.py                                   # 打开网页版（支持填自
     });
   }
 
-  var q = new URLSearchParams(location.search).get("code");
-  if (q) {
-    var c = normCode(q);
-    if (c) { input.value = c; open(c); }
-    else { warn("链接里的 code 不是 6 位数字：" + q); }
+  var q = new URLSearchParams(location.search);
+  var qcode = q.get("code");
+  var wantRefresh = q.get("refresh") === "1";
+  if (qcode) {
+    var c = normCode(qcode);
+    if (!c) { warn("链接里的 code 不是 6 位数字：" + qcode); return; }
+    input.value = c;
+    if (wantRefresh) {
+      // 本地版 web.py 的 /report?code=X&refresh=1 表示"强制重新训练"，
+      // 静态站点没有后端可训练，只能给快照，所以先把差异讲清楚再跳转。
+      note.style.color = "#92400e";
+      note.innerHTML = "这条链接带了 <code>refresh=1</code>（本地版表示“重新训练”）。" +
+        "本站是静态快照站，<b>无法重新训练</b>，2.5 秒后打开 " + c + " 的现有报告" +
+        "（数据日见报告页顶部）；要真正刷新数值，请在本地运行 " +
+        "<code>python make_report.py --symbol " + c + " --run</code>。";
+      setTimeout(function () { open(c); }, 2500);
+    } else {
+      open(c);
+    }
   }
 })();
 </script>
