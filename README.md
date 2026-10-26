@@ -229,6 +229,17 @@ cp secrets.example.json secrets.json
 python run.py --llm-check               # 发一次极短请求验证
 ```
 
+### 本地版界面：模型下拉 + 自带 Key
+
+`python web.py` 起的本地 Web 首页里，这块是**真表单**（模型 8 选 1 / Key 输入 / 保存 / 测试连接），
+顶部标签也会变成「本地版：可实时训练 / 重新出报告」：
+
+![本地版的模型与 Key 设置](docs/img/local-key-form.png)
+
+GitHub Pages 上同一块位置只显示说明文字 —— 静态站没有后端，表单 POST 到 `/settings` 会 404，
+所以页面用 `/__local` 哨兵端点探测运行环境：探测得到就展开表单，探测不到就隐藏表单。
+一份 `docs/index.html` 同时服务两种部署，不需要维护两套。
+
 模型输出被强制为 JSON 并做范围校验：
 
 ```json
