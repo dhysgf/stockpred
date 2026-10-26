@@ -140,8 +140,19 @@ Promise.all([
     `<option value="${c}">${esc(SNAP[c].name)}（${c}）</option>`).join("") || "<option>无数据</option>";
   sel.onchange = () => { render(sel.value); checkStale(SNAP[sel.value]); };
   if (codes.length) {
-    render(codes[0]);
-    const d = SNAP[codes[0]];
+    // 支持 ?code=600519 直连某只标的
+    const m = String(new URLSearchParams(location.search).get("code") || "").match(/\d{6}/);
+    const want = m ? m[0] : "";
+    const pick = (want && SNAP[want]) ? want : codes[0];
+    if (want && !SNAP[want]) {
+      document.getElementById("view").insertAdjacentHTML("beforebegin",
+        `<div class="err" style="margin-bottom:14px">快照里<b>没有 ${esc(want)}</b> 这只标的（当前快照含 ${codes.length} 只：${codes.join("、")}）。
+         本站是静态站点，浏览器无法现场训练模型；要生成 ${esc(want)} 的报告，请本地运行
+         <code>python make_report.py --symbol ${esc(want)} --run</code>。</div>`);
+    }
+    sel.value = pick;
+    render(pick);
+    const d = SNAP[pick];
     document.getElementById("asofTip").textContent = `数据日 ${d.asof || "—"}，收盘 ${d.close ?? "—"}`;
     checkStale(d);
   } else {

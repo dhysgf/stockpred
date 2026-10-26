@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>跳转中 · A股多模型决策系统</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f5f6f8;color:#1f2328;
+ font:15px/1.75 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+.wrap{max-width:720px;margin:0 auto;padding:56px 20px}
+.card{background:#fff;border:1px solid #dfe3e8;border-radius:12px;padding:22px 24px}
+.muted{color:#6b7280;font-size:13.5px;line-height:1.7}
+code{background:#f6f8fa;padding:1px 5px;border-radius:4px;font:12.5px ui-monospace,Consolas,monospace}
+a{color:#2563eb}
+.err{background:#fef2f2;border-left:4px solid #dc2626;padding:12px 16px;border-radius:6px;margin:12px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="card">
+    <h1 id="h" style="font-size:22px;margin:0 0 8px">正在打开…</h1>
+    <div class="muted" id="tip">正在按 code 参数查找对应报告。</div>
+    <div id="extra"></div>
+    <p class="muted" style="margin-top:16px"><a href="index.html">← 返回首页</a></p>
+  </div>
+</div>
+<script>
+/* 兼容 /report.html?code=600519 这类链接：
+   有预生成报告 → 直接跳；没有 → 跳逐项分析页并带上 code。 */
+(function () {
+  var m = String(new URLSearchParams(location.search).get("code") || "").match(/\d{6}/);
+  var code = m ? m[0] : "";
+  var h = document.getElementById("h");
+  var tip = document.getElementById("tip");
+
+  if (!code) {
+    h.textContent = "缺少 code 参数";
+    tip.innerHTML = "用法：<code>report.html?code=600519</code>（code 为 6 位 A 股代码）。";
+    return;
+  }
+
+  var report = "report_" + code + ".html";
+  tip.innerHTML = "正在查找 <code>" + code + "</code> 的报告…";
+
+  fetch(report, { method: "HEAD" })
+    .then(function (r) {
+      if (r.ok) { location.replace(report); return; }
+      location.replace("analysis.html?code=" + code);
+    })
+    .catch(function () { location.replace("analysis.html?code=" + code); });
+
+  document.getElementById("extra").innerHTML =
+    '<div class="err" style="display:none" id="fb"></div>';
+})();
+</script>
+</body>
+</html>
