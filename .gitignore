@@ -1,0 +1,24 @@
+# ---- 密钥：绝不要提交 ----
+secrets.json
+.env
+*.pem
+*.key
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+
+# ---- 本地缓存与运行时产物 ----
+.cache/
+output/
+*.log
+
+# ---- 系统文件 ----
+.DS_Store
+Thumbs.db
+desktop.ini

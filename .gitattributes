@@ -1,0 +1,4 @@
+# 统一换行，避免 Windows 上提交 CRLF 造成 diff 噪声
+* text=auto eol=lf
+*.png binary
+*.jpg binary

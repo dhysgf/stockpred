@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A股多模型决策系统 · 展示</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f5f6f8;color:#1f2328;font:15px/1.75 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+.wrap{max-width:960px;margin:0 auto;padding:36px 20px 64px}
+h1{font-size:26px;margin:0 0 8px}
+h2{font-size:17px;margin:0 0 10px}
+.lead{color:#5b6470;font-size:15px;margin:0 0 6px}
+.card{background:#fff;border:1px solid #dfe3e8;border-radius:12px;padding:20px 22px;margin:16px 0}
+.muted{color:#6b7280;font-size:13px;line-height:1.65}
+.tag{display:inline-block;font-size:12px;color:#5b6470;background:#eef2f7;border-radius:999px;padding:2px 10px;margin:0 6px 6px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+a.rep{display:block;text-decoration:none;color:inherit;border:1px solid #e3e8ee;border-radius:10px;
+ padding:16px 18px;background:#fafbfc;transition:.15s}
+a.rep:hover{border-color:#93c5fd;background:#f0f7ff;transform:translateY(-1px)}
+a.rep b{display:block;font-size:16px;margin-bottom:4px}
+.btn{display:inline-block;text-decoration:none;background:#2ca02c;color:#fff;padding:11px 22px;
+ border-radius:8px;font-size:15px;margin-top:6px}
+.btn.alt{background:#3b82f6}
+.btn:hover{filter:brightness(1.06)}
+ul{padding-left:20px}
+li{margin:6px 0}
+.warn{background:#fffbeb;border-left:4px solid #f59e0b;padding:12px 16px;border-radius:6px;font-size:14px}
+table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}
+th,td{padding:8px 10px;border-bottom:1px solid #edf0f3;text-align:left}
+thead th{background:#f6f8fa;color:#5b6470;font-weight:600}
+.foot{color:#6b7280;font-size:12.5px;margin-top:26px;line-height:1.7}
+.ask input{width:100%;padding:11px 13px;border:1px solid #dfe3e8;border-radius:8px;font-size:15px;box-sizing:border-box}
+.ask button{margin-top:10px;background:#2ca02c;color:#fff;border:0;border-radius:8px;padding:11px 22px;font-size:15px;cursor:pointer}
+.ask button:hover{filter:brightness(1.06)}
+@media(max-width:700px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>A股多模型决策系统</h1>
+<p class="lead">把 <b>多模型量化预测</b> + <b>K线形态</b> + <b>量能资金</b> + <b>大模型新闻/政策研判</b> + <b>拐点模型</b>
+加权成一个可解释的决策，并给出 <b>5 / 7 / 30 个交易日</b> 的目标价位区间与买卖点。</p>
+<div>
+  <span class="tag">RF + GBDT + LSTM 融合</span>
+  <span class="tag">300 只股票池横截面训练</span>
+  <span class="tag">CQR / 波动率区间</span>
+  <span class="tag">任意 A 股 6 位代码</span>
+  <span class="tag">大模型 Key 留空即用服务器内置</span>
+</div>
+
+<div class="card ask" id="askWrap">
+  <h2>输入任意股票代码 → 在线生成完整报告</h2>
+  <div class="muted" style="margin-bottom:10px">
+    沪深300 池内外的股票都支持（池外标的自动并入训练池，只作为预测对象）。
+    每次分析都会<b>重新训练多模型并抓取当日行情与新闻</b>，约 3~6 分钟。
+  </div>
+  <form id="askForm" method="get" action="/report">
+    <input id="askCode" name="code" placeholder="600519 / 000001 / 688836 / 任何 A 股 6 位代码">
+    <button type="submit">开始分析（约 3~5 分钟）</button>
+  </form>
+  <div class="muted" id="askNote" style="margin-top:10px">
+    在本地模型上真实训练与预测：多模型融合 + K线形态 + 量能资金 + 新闻/政策 + 拐点 + 买卖点，
+    生成和下面几份报告<b>同样的页面</b>。报告页顶部有「← 返回主页」。
+  </div>
+  <details style="margin-top:12px">
+    <summary>高级：选择大模型（可选，Key 留空即用服务器内置）</summary>
+    <form method="post" action="/settings">
+      <label>模型（带「免费额度」标记的不烧钱）</label>
+      <select name="model_choice" style="width:100%;max-width:520px;padding:9px 10px;
+              border:1px solid #dfe3e8;border-radius:8px;font-size:15px">
+        <option value="https://dashscope.aliyuncs.com/compatible-mode/v1|qwen-plus">千问 qwen-plus（百炼免费额度 100 万 tokens）</option>
+        <option value="https://dashscope.aliyuncs.com/compatible-mode/v1|qwen-flash">千问 qwen-flash（百炼免费额度，最快最省）</option>
+        <option value="https://dashscope.aliyuncs.com/compatible-mode/v1|qwen3.5-plus">千问 qwen3.5-plus（百炼免费额度）</option>
+        <option value="https://dashscope.aliyuncs.com/compatible-mode/v1|qwen3.7-plus">千问 qwen3.7-plus（百炼免费额度，研判更细）</option>
+        <option value="https://dashscope.aliyuncs.com/compatible-mode/v1|qwen-turbo">千问 qwen-turbo（百炼免费额度，偶尔限流）</option>
+        <option value="https://open.bigmodel.cn/api/paas/v4|glm-4-flash">智谱 GLM-4-flash（有免费额度，需注册）</option>
+        <option value="https://api.deepseek.com/v1|deepseek-chat">DeepSeek deepseek-chat（需充值，按量很便宜）</option>
+        <option value="http://localhost:11434/v1|qwen2.5">本地 Ollama（完全免费，需本机已装模型）</option>
+      </select>
+      <label style="display:block;margin-top:10px">API Key（<b>留空 = 用服务器内置 Key</b>，已配置好可直接用）</label>
+      <input type="password" name="api_key" placeholder="留空即可；或填自己的 sk-... / dashscope key"
+             style="width:100%;max-width:520px" autocomplete="off">
+      <button type="submit" style="margin-top:10px">保存（只对本次会话生效）</button>
+    </form>
+    <div class="tiny" style="margin-top:8px">
+      <b>默认不需要填 Key</b>：报告里的新闻/政策研判用服务器内置的 Key。
+      你自己填的 Key 只放在服务器内存里（按浏览器会话隔离），重启即清空，不落盘、不进日志。<br>
+      <b>免费额度怎么用</b>：阿里云百炼对新用户每个模型各送 100 万 tokens（够跑上千次研判），
+      选上面标「免费额度」的模型即可；<code>qwen-turbo</code> 免费但偶尔被限流(429)，
+      限流时换 <code>qwen-plus</code> 或 <code>qwen3.7-plus</code>。
+    </div>
+  </details>
+</div>
+<div class="card">
+  <h2>看真实生成的报告</h2>
+  <div class="muted" style="margin-bottom:12px">报告由本地模型实跑生成（<b>数据截至 2026-10-23</b>，即当前最新交易日），图片已内嵌在页面里。</div>
+  <div class="grid">
+    <a class="rep" href="report_688836.html">
+      <b>宇树科技 · 688836</b>
+      <span class="muted">最新一期：20cm 涨停收 624 元，综合决策「强烈买入」但 10 日内见顶概率 79.6%</span>
+    </a>
+    <a class="rep" href="forecast_688836_deep.html">
+      <b>宇树科技 · 深度预测报告</b>
+      <span class="muted">三情景概率预测 + 估值反推「现价已 price in 什么」+ 机构目标价分歧 + 事件日历</span>
+    </a>
+    <a class="rep" href="report_600519.html">
+      <b>贵州茅台 · 600519</b>
+      <span class="muted">多模型融合 + 千问研判，给出 5/7/30 日目标价位与买卖点</span>
+    </a>
+    <a class="rep" href="report_000001.html">
+      <b>平安银行 · 000001</b>
+      <span class="muted">同一套流程在银行股上的输出</span>
+    </a>
+    <a class="rep" href="report_601318.html">
+      <b>中国平安 · 601318</b>
+      <span class="muted">现场用输入框跑出来的：10:43 提交 → 10:49 出报告</span>
+    </a>
+    <a class="rep" href="report_002594.html">
+      <b>比亚迪 · 002594</b>
+      <span class="muted">池外标的，自动并入训练池</span>
+    </a>
+    <a class="rep" href="report_301330.html">
+      <b>熵基科技 · 301330</b>
+      <span class="muted">曾因报告未刷新而停在 10-21，现已更新到最新交易日</span>
+    </a>
+    <a class="rep" href="report_300007.html">
+      <b>汉威科技 · 300007</b>
+      <span class="muted">同一套流程在传感器标的上的输出</span>
+    </a>
+    <a class="rep" href="report_301293.html">
+      <b>三博脑科 · 301293</b>
+      <span class="muted">同一套流程在医疗标的上的输出</span>
+    </a>
+    <a class="rep" href="report_000858.html">
+      <b>五粮液 · 000858</b>
+      <span class="muted">白酒龙头，与茅台同一交易日口径</span>
+    </a>
+    <a class="rep" href="report_601456.html">
+      <b>国联民生 · 601456</b>
+      <span class="muted">同一套流程在券商标的上的输出</span>
+    </a>
+    <a class="rep" href="report_002415.html">
+      <b>海康威视 · 002415</b>
+      <span class="muted">线上提交验证的新标的：提交 → 后台训练 → 出报告，数据日 10-23</span>
+    </a>
+  </div>
+</div>
+
+<div class="card">
+  <h2>看完整的逐项拆解 + 图表（在线）</h2>
+  <div class="muted">不只给结论：目标价区间、六路信号的权重与贡献、K线形态、量能资金与分单、
+  拐点概率、买卖点、大模型研判的驱动/风险/盯盘，以及<b>预测图 / K线图 / 拐点图</b> —— 全部结构化摊开。
+  数值来自本地模型的真实运行结果（每只股票的数据日见分析页顶部显示，取的是行情源最新一根日线），页尾还能用你自己的 Key <b>复跑新闻研判</b>并对比差异。</div>
+  <a class="btn alt" href="analysis.html">打开完整分析（含图）→</a>
+</div>
+
+<div class="card">
+  <h2>为什么在线数值可能和本地报告不一样</h2>
+  <ul>
+    <li><b>在线页渲染的是一次真实运行的快照</b>（价格预测、形态、量能、拐点、决策全在），
+      但浏览器跑不了 sklearn + PyTorch + 300 只股票池，所以不能换股票实时重算。</li>
+    <li><b>新闻研判可以复跑</b>：换模型（qwen-plus / deepseek-chat / glm-4-flash）后情绪、政策影响、
+      置信度会浮动 —— 这是模型差异 + 采样随机，不是 bug。</li>
+    <li><b>后端那次调用额外附带当日行情上下文</b>（收盘价、近 5/20 日涨跌、量比、主力净额占比），
+      在线复跑没有这几项，数值通常更保守。</li>
+  </ul>
+</div>
+
+<div class="card">
+  <h2>它是怎么算的</h2>
+  <table>
+    <thead><tr><th>环节</th><th>做法</th></tr></thead>
+    <tbody>
+      <tr><td>价格预测</td><td>每个周期只做 <b>一次</b> 直接回归（DIRMO），预测「第 N 个交易日的收盘价」，不逐日滚动</td></tr>
+      <tr><td>多模型</td><td>随机森林 / 梯度提升 / LSTM 等权融合，成员分歧用于估计不确定性</td></tr>
+      <tr><td>目标区间</td><td>max(多模型分歧, 波动率外推) × 1.28，约 80% 覆盖；区间宽度即"该不该重仓"的信号</td></tr>
+      <tr><td>新闻与政策</td><td>大模型读新闻/政策，输出情绪与政策影响两路信号，<b>各自加权</b>进决策</td></tr>
+      <tr><td>买卖点</td><td>由目标区间 + MA5/MA20/ATR 推出低吸区、突破确认价、止盈区、止损位</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="card">
+  <h2>这个系统的诚实边界</h2>
+  <ul>
+    <li>短周期（1~5 日）方向准确率约 <b>52~53%</b>，只比抛硬币好一点点。</li>
+    <li>30 日方向准确率实测 <b>48.3%</b>，还不如抛硬币 —— 所以 30 日<b>刻意不给方向</b>，只给价格区间。</li>
+    <li>新闻与政策的影响<b>无法回测</b>（历史上没存当时的新闻文本），只能算"有信息价值"，不算"已验证有效"。</li>
+    <li>用当前成分股回测历史存在<b>幸存者偏差</b>，策略超额要打折看。</li>
+    <li><b>数据新鲜度按「数据日」判，不按文件时间</b>：报告页顶部的「数据截至」是行情源最新一根日线；
+      若数据落后，页面顶部会黄条提示并给出「重新分析」按钮（浏览本身不会触发重训）。</li>
+  </ul>
+  <div class="warn" style="margin-top:12px">本页所有内容为算法输出，<b>不构成投资建议</b>。股市有风险，决策需谨慎。</div>
+</div>
+
+<div class="card">
+  <h2>关于在线版的能力边界</h2>
+  <div class="muted">
+    这个在线版是<b>静态站点</b>：量化模型（sklearn + PyTorch + 300 只股票池）无法在浏览器里运行，
+    所以报告是<b>预先生成</b>的。浏览器里能实时跑的只有<b>大模型研判</b>那一段（用你自己的 Key）。<br><br>
+    要完整体验「输入任意股票代码 → 实时训练 → 出报告」，请在本地运行：
+  </div>
+  <pre style="background:#f6f8fa;border:1px solid #edf0f3;border-radius:8px;padding:12px 14px;
+   overflow-x:auto;font:12.5px/1.6 ui-monospace,Consolas,monospace;margin-top:10px">pip install -r requirements.txt
+python make_report.py --symbol 600519 --run     # 跑分析 + 出带图报告
+python web.py                                   # 打开网页版（支持填自己的 Key）</pre>
+</div>
+
+<div class="foot">
+数据来源：新浪财经（行情）、东方财富（新闻）。大模型：服务器内置 Key（访客可留空直接用，或自带 Key 覆盖）。<br>
+生成时间 2026-10-23　·　仅供研究与技术演示。
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+# 股价预测工具依赖
+# 基础运行（必需）
+pandas>=2.0
+numpy>=1.24
+scikit-learn>=1.3
+matplotlib>=3.7
+# 中文新闻情感分析（必需，同时作为大模型不可用时的降级路径）
+snownlp>=0.12
+# 大模型调用统一走标准库 urllib（OpenAI 兼容协议），无需 openai SDK
+# 可选：若改用 yfinance 获取全球/美股行情，可取消注释
+# yfinance>=0.2

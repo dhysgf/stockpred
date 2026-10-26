@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>完整分析 · 所有结果可视化</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f5f6f8;color:#1f2328;font:15px/1.7 -apple-system,"Segoe UI","Microsoft YaHei",sans-serif}
+.wrap{max-width:1000px;margin:0 auto;padding:28px 18px 64px}
+h1{font-size:23px;margin:0 0 6px}
+h2{font-size:16px;margin:0 0 10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+h3{font-size:14px;margin:14px 0 6px;color:#374151}
+.lead{color:#5b6470;font-size:14px;margin:0 0 14px}
+.card{background:#fff;border:1px solid #dfe3e8;border-radius:12px;padding:18px 20px;margin:14px 0}
+.muted{color:#6b7280;font-size:13px}
+.tiny{color:#8a94a2;font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:7px 9px;border-bottom:1px solid #edf0f3;text-align:right}
+th:first-child,td:first-child{text-align:left}
+thead th{background:#f6f8fa;color:#5b6470;font-weight:600}
+.pill{display:inline-block;font-size:12px;padding:2px 10px;border-radius:999px;background:#eef2f7;color:#5b6470}
+.up{background:#fdeaea;color:#c0392b}.down{background:#e8f5ec;color:#1e7f43}.neu{background:#eef2f7;color:#5b6470}
+.kv{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:10px 0}
+.kv > div{background:#fafbfc;border:1px solid #eef1f4;border-radius:10px;padding:10px 12px}
+.kv span{display:block;font-size:12px;color:#6b7280}
+.kv b{font-size:19px}
+.bar{height:5px;background:#eef1f4;border-radius:3px;margin-top:6px;position:relative;overflow:hidden}
+.bar i{position:absolute;top:0;bottom:0;left:0;border-radius:3px}
+ul{padding-left:18px;margin:6px 0}li{margin:5px 0}
+.flex{display:flex;gap:14px;flex-wrap:wrap}
+.flex > div{flex:1 1 300px;min-width:260px}
+.note{background:#f6f9ff;border-left:3px solid #3b82f6;padding:10px 14px;border-radius:6px;font-size:13px;color:#374151;margin:12px 0}
+.warn{background:#fffbeb;border-left:3px solid #f59e0b;padding:10px 14px;border-radius:6px;font-size:13px}
+label{display:block;font-size:12.5px;color:#5b6470;margin:10px 0 4px}
+input,select{width:100%;padding:9px 11px;border:1px solid #dfe3e8;border-radius:8px;font-size:14px;background:#fff}
+button{cursor:pointer;border:1px solid #dfe3e8;background:#fff;border-radius:8px;padding:8px 14px;font-size:13.5px}
+button.go{background:#2ca02c;color:#fff;border-color:#2ca02c;font-size:15px;padding:11px 22px}
+button:disabled{opacity:.55;cursor:default}
+.quick button{margin:0 6px 6px 0;font-size:12.5px;padding:6px 10px}
+.err{background:#fdeaea;border-left:3px solid #c0392b;padding:10px 14px;border-radius:6px;font-size:13px;white-space:pre-wrap}
+details summary{cursor:pointer;color:#3b82f6;font-size:13px;margin-top:10px}
+.tabs{display:flex;gap:8px;margin:6px 0 14px;flex-wrap:wrap}
+.tabs button.on{background:#1f2328;color:#fff;border-color:#1f2328}
+.shot{width:100%;height:auto;display:block;border:1px solid #eef1f4;border-radius:8px;background:#fff}
+@media(max-width:700px){.kv{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>完整分析 · 所有结果可视化</h1>
+<p class="lead">同一只股票，把量化模型的每一层都摊开给你看：目标价区间 → 信号权重 → K线形态 → 量能资金 → 拐点概率 → 买卖点 → 大模型研判。
+数值来自本地模型的真实运行结果（<b id="asofTip">数据日 —</b>），不是网页现算的。</p>
+
+<div id="staleTip"></div>
+
+<div class="card">
+  <label>选择标的</label>
+  <select id="stock"><option>加载中…</option></select>
+  <div class="muted" id="meta" style="margin-top:8px"></div>
+</div>
+
+<div id="view"></div>
+
+<h2 style="margin-top:30px">用你自己的大模型 Key 复跑「新闻研判」这一段</h2>
+<div class="card">
+  <div class="note">为什么要复跑：上面第 8 块是本地那次运行的固定结果。这里换成<b>你的 Key / 你的模型</b>再算一遍，
+  可以看同一批材料在不同模型下的分歧有多大。注意——<b>它只能重算新闻这一段</b>，
+  价格预测、形态、量能、拐点这些要跑 sklearn + PyTorch，浏览器里跑不了。</div>
+
+  <div class="quick">
+    <button data-base="https://dashscope.aliyuncs.com/compatible-mode/v1" data-model="qwen-plus">千问 qwen-plus<br><small>百炼免费额度</small></button>
+    <button data-base="https://dashscope.aliyuncs.com/compatible-mode/v1" data-model="qwen-flash">千问 qwen-flash<br><small>百炼免费额度·最快</small></button>
+    <button data-base="https://dashscope.aliyuncs.com/compatible-mode/v1" data-model="qwen3.7-plus">千问 qwen3.7-plus<br><small>百炼免费额度·更细</small></button>
+    <button data-base="https://dashscope.aliyuncs.com/compatible-mode/v1" data-model="qwen-turbo">千问 qwen-turbo<br><small>百炼免费额度·偶尔限流</small></button>
+    <button data-base="https://api.deepseek.com/v1" data-model="deepseek-chat">DeepSeek<br><small>需充值·很便宜</small></button>
+    <button data-base="https://open.bigmodel.cn/api/paas/v4" data-model="glm-4-flash">智谱 GLM-4-Flash<br><small>有免费额度·需注册</small></button>
+    <button data-base="http://localhost:11434/v1" data-model="qwen2.5">本地 Ollama<br><small>完全免费</small></button>
+  </div>
+  <div class="flex">
+    <div><label>接口地址（OpenAI 兼容）</label><input id="base" value="https://dashscope.aliyuncs.com/compatible-mode/v1"></div>
+    <div><label>模型名</label><input id="model" value="qwen-plus"></div>
+  </div>
+  <label>API Key（这里必须自己填）</label>
+  <input id="key" type="password" placeholder="sk-... / dashscope key">
+  <div class="muted" style="margin-top:8px">
+    <label style="font-weight:400"><input type="checkbox" id="remember" style="width:auto;margin-right:6px">
+    在这台电脑记住 Key（只存 localStorage，不上传）</label>
+    <div style="margin-top:6px">
+      这一步是<b>浏览器直连大模型</b>（请求直接发到百炼/DeepSeek，不经过本服务器），
+      所以必须用你自己的 Key。<b>服务器内置的 Key 不会下发到浏览器</b> ——
+      那是首页「输入股票代码 → 生成报告」那条后端路径在用，那里不需要你填。
+      用百炼免费额度模型（上面标「百炼免费额度」的）不烧钱，每个模型各送 100 万 tokens。
+    </div>
+  </div>
+  <div id="status" style="margin-top:10px"></div>
+  <button class="go" id="run" style="margin-top:10px">开始研判</button>
+</div>
+
+<div id="result"></div>
+
+<div class="card">
+  <h2>10 · 这套系统到底有多可信（回测实测）</h2>
+  <table><thead><tr><th>周期</th><th>方向准确率</th><th>样本量</th><th>结论</th></tr></thead><tbody>
+    <tr><td>1 日</td><td>53.1%</td><td>≈8,100</td><td>弱但统计显著（+5.6σ），可用</td></tr>
+    <tr><td>5 日</td><td>52.1%</td><td>≈8,100</td><td>弱但显著（+3.8σ），可用</td></tr>
+    <tr><td>7 日</td><td>50.4%</td><td>≈8,100</td><td>无预测力，需过置信门控（门控后 62%）</td></tr>
+    <tr><td>30 日</td><td>48.3%</td><td>≈8,100</td><td><b>比抛硬币还差</b>，所以刻意不给方向、只给区间</td></tr>
+  </tbody></table>
+  <div class="muted" style="margin-top:10px">价格误差（MAPE，walk-forward 样本外）：1 日 1.1% · 5 日 2.6% · 7 日 3.0% · 30 日 5.9%。
+  新闻/政策的影响<b>无法回测</b>（历史新闻文本没留存），只能算"有信息价值"。用当前成分股回测存在<b>幸存者偏差</b>。</div>
+</div>
+
+<div class="warn" style="margin-top:22px">
+  这里所有内容都是算法输出，<b>不构成投资建议</b>。方向准确率实测：1 日 53.1%、5 日 52.1%（弱但统计显著）、
+  30 日 48.3%（不如抛硬币，所以刻意不给方向）。新闻与政策的影响<b>无法回测</b>。
+</div>
+<p class="tiny" style="margin-top:18px"><a href="index.html">← 返回首页</a>　·　
+<a href="report_600519.html">贵州茅台完整报告</a>　·　<a href="report_000001.html">平安银行完整报告</a>　·　<a href="report_688836.html">宇树科技完整报告</a>　·　<a href="forecast_688836_deep.html">宇树科技深度预测</a></p>
+
+</div>
+
+<script>
+let SNAP = {}, NEWS = {}, CUR = null;
+
+const pct = (v, d = 2) => (v === null || v === undefined || isNaN(v)) ? "—" : (v > 0 ? "+" : "") + Number(v).toFixed(d);
+const num = (v, d = 2) => (v === null || v === undefined || isNaN(v)) ? "—" : Number(v).toFixed(d);
+const esc = s => String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const cls = v => v > 0.05 ? "up" : v < -0.05 ? "down" : "neu";
+
+Promise.all([
+  fetch("analysis_snapshot.json").then(r => r.json()).catch(() => ({})),
+  fetch("news_snapshot.json").then(r => r.json()).catch(() => ({}))
+]).then(([a, n]) => {
+  SNAP = a; NEWS = n;
+  const sel = document.getElementById("stock");
+  const codes = Object.keys(SNAP);
+  sel.innerHTML = codes.map(c =>
+    `<option value="${c}">${esc(SNAP[c].name)}（${c}）</option>`).join("") || "<option>无数据</option>";
+  sel.onchange = () => { render(sel.value); checkStale(SNAP[sel.value]); };
+  if (codes.length) {
+    render(codes[0]);
+    const d = SNAP[codes[0]];
+    document.getElementById("asofTip").textContent = `数据日 ${d.asof || "—"}，收盘 ${d.close ?? "—"}`;
+    checkStale(d);
+  } else {
+    document.getElementById("view").innerHTML =
+      `<div class="err">analysis_snapshot.json 没加载到。这份文件要由 make_snapshot.py 生成。</div>`;
+  }
+}).catch(e => {
+  document.getElementById("view").innerHTML = `<div class="err">快照加载失败：${esc(e.message)}</div>`;
+});
+
+/* 数据新鲜度检查：快照的数据日落后于"今天"时明确提示。
+   行情源在交易日盘中只给到上一个交易日收盘，所以落后 1 天是正常的；
+   落后 2 天以上（跨周末）需要提示。 */
+function checkStale(d) {
+  const tip = document.getElementById("staleTip");
+  if (!tip) return;
+  if (!d || !d.asof) { tip.innerHTML = ""; return; }
+  const asof = new Date(d.asof + "T00:00:00");
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const gap = Math.round((today - asof) / 86400000);
+  if (gap >= 2) {
+    tip.innerHTML = `<div class="card" style="border-color:#f59e0b;background:#fffbeb">
+      <b>⚠ 这份快照的数据日是 ${esc(d.asof)}，与今天相差 ${gap} 天。</b>
+      目标价、买卖点、拐点概率全部基于 ${esc(d.asof)} 收盘价计算，期间的价格变化没有计入。
+      在首页输入代码重新提交可得到更新数据。</div>`;
+  } else {
+    tip.innerHTML = "";
+  }
+}
+
+/* ---------------- 渲染：完整分析 ---------------- */
+function render(code) {
+  const d = SNAP[code]; if (!d) return;
+  CUR = d;
+  const dec = d.decision || {}, nw = d.news || {}, llm = d.llm_summary || {};
+  const sigs = d.signals || [], pat = d.patterns || { items: [] }, vol = d.volume || { items: [] };
+  const pol = (sigs.find(s => s.name === "大模型政策研判") || {});
+  const scls = nw.stance === "偏多" ? "up" : nw.stance === "偏空" ? "down" : "neu";
+  const vcls = dec.verdict === "买入" ? "up" : dec.verdict === "卖出" ? "down" : "neu";
+
+  let h = "";
+
+  /* 1. 结论 */
+  h += `<div class="card">
+    <h2>1 · 一句话结论 <span class="pill ${vcls}">${esc(dec.verdict || "—")}</span>
+      <span class="pill">综合分 ${pct(dec.score, 3)}</span></h2>
+    <div class="kv">
+      <div><span>收盘价（${esc(d.asof || "")}）</span><b>${num(d.close)}</b></div>
+      <div><span>决策置信度</span><b>${num(dec.confidence)}</b></div>
+      <div><span>信号一致度</span><b>${dec.agreement ?? "—"}%</b></div>
+      <div><span>五档委比</span><b>${pct(d.weibi, 1)}%</b></div>
+    </div>
+    <div class="muted">${esc(dec.note || "")}</div>
+    <div class="note">训练方式：${esc(d.training || "—")} ｜ 模型 ${esc(d.model || "—")}（成员 ${esc(d.members || "—")}）
+      ｜ 特征集 ${esc(d.features || "—")} ｜ 标签 ${esc(d.label || "—")}</div>
+  </div>`;
+
+  /* 2. 图：预测图 + K线图 + 拐点图 */
+  const shot = (f, cap, tip) => `<div class="card"><h2>${cap}</h2>
+    <img class="shot" src="img/${f}" alt="${cap}" onerror="this.closest('.card').style.display='none'">
+    ${tip ? `<div class="tiny" style="margin-top:8px">${tip}</div>` : ""}</div>`;
+  h += `<div class="card"><h2>2 · 预测图与K线图</h2>
+    <div class="muted">下面是本地模型这次运行真正画出来的图（Matplotlib 直接输出，没有重画）。</div></div>`;
+  h += shot(`forecast_${code}.png`, "2.1 股价预测图",
+    "四条虚线分别是 1 / 5 / 7 / 30 个交易日后的预测收盘价，阴影为区间，实线是真实收盘。");
+  h += shot(`candles_${code}.png`, "2.2 K线形态图（近 60 个交易日）",
+    "标出识别到的经典形态位置，配合第 5 节的形态明细看。");
+  h += shot(`forecast_${code}_turn.png`, "2.3 拐点预测图",
+    "顶/底拐点的概率分布与预计出现区间（只有部分标的有这张图）。");
+
+  /* 3. 各周期目标价 */
+  h += `<div class="card"><h2>3 · 各周期目标价（每档只预测第 N 个交易日）</h2>
+    <table><thead><tr><th>周期</th><th>预测日</th><th>预测收盘</th><th>相对现价</th>
+      <th>上涨概率</th><th>方向</th><th>区间下界</th><th>区间上界</th></tr></thead><tbody>`;
+  for (const r of (d.horizons || [])) {
+    h += `<tr><td>${r.h} 日</td><td>${esc(r.date)}</td><td>${num(r.pred)}</td>
+      <td class="${r.rel > 0 ? "up" : r.rel < 0 ? "down" : ""}">${pct(r.rel)}%</td>
+      <td>${num(r.prob, 3)}</td><td>${esc(r.dir)}</td><td>${num(r.lo)}</td><td>${num(r.hi)}</td></tr>`;
+  }
+  h += `</tbody></table>
+    <div class="tiny" style="margin-top:8px">区间宽度 = max(多模型分歧, 日波动×√h×1.28)，约 80% 覆盖；越宽说明越不确定、越不该重仓。</div></div>`;
+
+  /* 3. 信号贡献 */
+  const maxAbs = Math.max(...sigs.map(s => Math.abs(s.contrib)), 0.01);
+  h += `<div class="card"><h2>4 · 六路信号加权明细（这就是"综合分"的来历）</h2>
+    <table><thead><tr><th>信号</th><th>取值</th><th>权重</th><th>贡献</th><th>依据</th></tr></thead><tbody>`;
+  for (const s of sigs) {
+    const w = Math.abs(s.contrib) / maxAbs * 100;
+    const c = s.contrib > 0 ? "#c0392b" : "#1e7f43";
+    h += `<tr><td>${esc(s.name)}<div class="bar"><i style="width:${w}%;background:${c}"></i></div></td>
+      <td class="${cls(s.value)}">${pct(s.value, 4)}</td><td>${num(s.weight)}</td>
+      <td class="${cls(s.contrib)}">${pct(s.contrib, 4)}</td><td style="text-align:left" class="muted">${esc(s.note)}</td></tr>`;
+  }
+  const sum = sigs.reduce((a, b) => a + b.contrib, 0);
+  h += `</tbody><tfoot><tr><td><b>合计</b></td><td></td><td></td>
+    <td class="${cls(sum)}"><b>${pct(sum, 4)}</b></td><td style="text-align:left" class="muted">权重之和
+    ${num(sigs.reduce((a, b) => a + b.weight, 0))}</td></tr></tfoot></table></div>`;
+
+  /* 4+5 形态 / 量能 */
+  h += `<div class="flex">
+    <div class="card"><h2>5 · K线形态 <span class="pill">${esc(pat.summary || "—")}</span></h2>
+      <div class="muted">形态分 ${num(pat.score)}（多 ${num(pat.long)} / 空 ${num(pat.short)}）</div>
+      <ul>`;
+  if (!pat.items.length) h += `<li class="muted">近期无显著形态</li>`;
+  for (const it of pat.items) {
+    const c = it.dir === "利多" ? "up" : it.dir === "利空" ? "down" : "neu";
+    h += `<li><span class="pill ${c}">${esc(it.dir)}</span> <b>${esc(it.name)}</b>
+      <span class="tiny">${esc(it.date)} · 强度 ${num(it.strength)}</span><br>
+      <span class="muted">${esc(it.note)}</span></li>`;
+  }
+  h += `</ul></div>
+    <div class="card"><h2>6 · 量能与资金 <span class="pill">${esc(vol.summary || "—")}</span></h2>
+      <div class="muted">量能分 ${num(vol.score)}</div>
+      <table><thead><tr><th>指标</th><th>取值</th><th>贡献</th></tr></thead><tbody>`;
+  for (const it of vol.items) {
+    h += `<tr><td>${esc(it.name)}<div class="tiny">${esc(it.note)}</div></td>
+      <td style="text-align:left">${esc(it.value)}</td>
+      <td class="${cls(it.contrib)}">${pct(it.contrib, 3)}</td></tr>`;
+  }
+  h += `</tbody></table>`;
+  const fm = vol.flow || {};
+  if (Object.keys(fm).length) {
+    h += `<h3>资金流分单（万元）</h3><table><tbody>` +
+      Object.entries(fm).map(([k, v]) =>
+        `<tr><td>${esc(k)}</td><td class="${cls(v)}">${pct(v, 0)}</td></tr>`).join("") + `</tbody></table>`;
+  }
+  h += `</div></div>`;
+
+  /* 6. 拐点 */
+  const t = d.turning || { rows: [] };
+  h += `<div class="card"><h2>7 · 拐点概率（括号是基线）</h2>
+    <table><thead><tr><th>窗口</th><th>顶概率</th><th>顶基线</th><th>底概率</th><th>底基线</th></tr></thead><tbody>`;
+  for (const r of t.rows) {
+    h += `<tr><td>${r.h} 日</td><td>${num(r.top, 1)}%</td><td class="muted">${num(r.top_base, 1)}%</td>
+      <td>${num(r.bot, 1)}%</td><td class="muted">${num(r.bot_base, 1)}%</td></tr>`;
+  }
+  h += `</tbody></table><div class="muted" style="margin-top:8px">`;
+  if (t.next_top) h += `预计下一个<b>顶</b>拐点：约 ${t.next_top.days} 个交易日后（${t.next_top.lo}~${t.next_top.hi} 日）　`;
+  if (t.next_bot) h += `预计下一个<b>底</b>拐点：约 ${t.next_bot.days} 个交易日后（${t.next_bot.lo}~${t.next_bot.hi} 日）`;
+  h += `</div><div class="tiny">概率低于基线 = 该窗口反而不太可能出现拐点。</div></div>`;
+
+  /* 7. 买卖点 */
+  h += `<div class="card"><h2>8 · 买卖点与风险参数</h2><table><tbody>`;
+  for (const p of (d.trade_points || [])) {
+    if (p.label === "说明") {
+      h += `<tr><td colspan="2" class="tiny" style="text-align:left">· ${esc(p.value)}</td></tr>`;
+    } else {
+      h += `<tr><td><b>${esc(p.label)}</b></td><td style="text-align:left">${esc(p.value)}
+        ${p.note ? `<div class="tiny">${esc(p.note)}</div>` : ""}</td></tr>`;
+    }
+  }
+  h += `</tbody></table></div>`;
+
+  /* 8. 本地大模型研判 */
+  h += `<div class="card"><h2>9 · 大模型研判（本地那次运行，离线结果）
+      <span class="pill ${scls}">${esc(nw.stance || "—")}</span>
+      <span class="pill">${esc(nw.model || "—")} · ${num(nw.secs, 1)}s</span></h2>
+    <div class="kv">
+      <div><span>新闻情绪（0~1）</span><b>${num(nw.sentiment)}</b></div>
+      <div><span>政策影响（−1~1）</span><b>${pct(pol.value, 2)}</b></div>
+      <div><span>置信度</span><b>${num(nw.confidence)}</b></div>
+      <div><span>材料来源</span><b style="font-size:14px">${esc(nw.counts_raw || "—")}</b></div>
+    </div>
+    <p style="margin:10px 0 4px"><b>新闻结论</b></p><p class="muted">${esc(nw.summary || "—")}</p>
+    <div class="flex">
+      <div><h3>关键驱动</h3><ul>${(nw.drivers || []).map(x => `<li>${esc(x)}</li>`).join("") || '<li class="muted">—</li>'}</ul></div>
+      <div><h3>风险</h3><ul>${(nw.risks || []).map(x => `<li>${esc(x)}</li>`).join("") || '<li class="muted">—</li>'}</ul></div>
+    </div>
+    ${llm.text ? `<p style="margin:14px 0 4px"><b>综合研判（口径：${esc(llm.tone || "—")}）</b></p>
+      <p class="muted">${esc(llm.text)}</p>` : ""}
+    <div class="flex">
+      <div><h3>支撑</h3><ul>${(llm.supports || []).map(x => `<li>${esc(x)}</li>`).join("") || '<li class="muted">—</li>'}</ul></div>
+      <div><h3>警惕</h3><ul>${(llm.warns || []).map(x => `<li>${esc(x)}</li>`).join("") || '<li class="muted">—</li>'}</ul></div>
+      <div><h3>盯盘</h3><ul>${(llm.watch || []).map(x => `<li>${esc(x)}</li>`).join("") || '<li class="muted">—</li>'}</ul></div>
+    </div>
+    <div class="tiny">这一块的权重：情绪 0.10 + 政策 0.10 = 0.20，模型方向占 0.40，是主导项。</div>
+  </div>`;
+
+  /* 9. 大模型独立价格预测 + 条件规则预判（第二意见） */
+  const lf = d.llm_forecast || {};
+  if ((lf.forecasts || []).length || (lf.rules || []).length) {
+    const fcRows = (lf.forecasts || []).map(x => {
+      const c = x.pct > 0 ? "up" : (x.pct < 0 ? "down" : "neu");
+      return `<tr><td><b>${x.horizon} 日</b></td><td class="${c}">${pct(x.pct)}%</td>
+        <td>${x.price == null ? "—" : num(x.price)}</td><td>${x.prob_up}%</td>
+        <td style="text-align:left" class="muted">${esc(x.reason || "")}</td></tr>`;
+    }).join("");
+    const ruleRows = (lf.rules || []).map(x => `<tr>
+        <td style="text-align:left"><b>若</b> ${esc(x.trigger || "")}</td>
+        <td style="text-align:left">${esc(x.action || "")}</td>
+        <td style="text-align:left" class="muted">${esc(x.why || "")}</td></tr>`).join("");
+    h += `<div class="card"><h2>10 · 大模型自己的价格预测与条件规则
+        <span class="pill">独立第二意见 · 不参与加权</span>
+        ${lf.model ? `<span class="pill">${esc(lf.model)} · ${num(lf.secs, 1)}s</span>` : ""}
+        ${lf.direction ? `<span class="pill ${lf.direction === "偏多" ? "up" : (lf.direction === "偏空" ? "down" : "neu")}">${esc(lf.direction)}</span>` : ""}</h2>
+      ${lf.summary ? `<p class="muted" style="margin:10px 0 4px"><b>它的总结</b>：${esc(lf.summary)}</p>` : ""}
+      <p style="margin:12px 0 4px"><b>它自己给的价格预测</b></p>
+      <table class="tbl"><thead><tr><th>周期</th><th>涨跌</th><th>目标价</th><th>收涨概率</th>
+        <th style="text-align:left">理由</th></tr></thead><tbody>${fcRows}</tbody></table>
+      <p style="margin:16px 0 4px"><b>它写的条件规则（if → then）</b></p>
+      <table class="tbl"><thead><tr><th style="text-align:left">触发条件</th>
+        <th style="text-align:left">满足后怎么做</th><th style="text-align:left">为什么</th></tr></thead>
+        <tbody>${ruleRows}</tbody></table>
+      <div class="flex" style="margin-top:14px">
+        <div><h3>它的理由</h3><ul>${(lf.reasons || []).map(x => `<li>${esc(x)}</li>`).join("") || '<li class="muted">—</li>'}</ul></div>
+        <div><h3>它提示的风险</h3><ul>${(lf.risks || []).map(x => `<li>${esc(x)}</li>`).join("") || '<li class="muted">—</li>'}</ul></div>
+      </div>
+      <div class="tiny" style="margin-top:10px">它拿到的是<b>原始行情 + 技术指标 + 它自己上一轮的新闻研判</b>，
+        <b>没有看到</b>量化模型的目标价与综合分，所以两套结论的差异是真分歧，值得对照看。
+        它<b>不参与</b>联合决策加权（否则等于让大模型给自己打分）。</div>
+    </div>`;
+  }
+
+  document.getElementById("view").innerHTML = h;
+  document.getElementById("meta").textContent =
+    `${d.name}（${code}）· 数据日 ${d.asof || "—"} · 收盘 ${d.close ?? "—"} · 实时 ${d.realtime ?? "—"} · ${d.hist || "—"} 根日线`;
+}
+
+/* ---------------- 复跑：新闻研判 ---------------- */
+const SYSTEM = "你是 A 股资深策略分析师。只根据给定新闻，不编造事实，不使用未来信息。"
+  + "严格输出 JSON，不要输出任何解释文字或 markdown 代码块。";
+
+function buildPrompt(code, news) {
+  const g = (news && news.groups) || {};
+  const label = { stock: "个股", policy: "政策", market: "市场" };
+  const lines = [];
+  for (const k of ["stock", "policy", "market"]) {
+    for (const it of (g[k] || [])) {
+      lines.push(`[${label[k]}] ${(it.brief || it.title || "").slice(0, 140)}`);
+    }
+  }
+  const text = `请逐条分析下面这些与「${news.name || code}（${code}）」相关的新闻/政策材料，
+并给出对**未来 5~10 个交易日**股价的影响判断。
+
+新闻材料（共 ${lines.length} 条，每条前面标了类型）：
+${lines.join("\n")}
+
+输出 JSON，字段与取值范围必须严格遵守：
+{
+  "sentiment": 0到1的小数,               // 全部材料整体情绪，0.5=中性
+  "policy_impact": -1到1的小数,          // 政策/监管的影响方向与力度
+  "confidence": 0到1的小数,              // 材料少/含糊就给低分
+  "stance": "偏多" 或 "偏空" 或 "中性",
+  "by_group": {"stock": 0到1, "market": 0到1},   // 个股新闻、市场情绪分别打分
+  "key_drivers": ["最多4条最关键的多头驱动，每条不超过25字"],
+  "risks": ["最多3条主要风险，每条不超过25字"],
+  "material_notes": [{"i": 序号从0开始, "impact": "利多"或"利空"或"中性", "why": "不超过18字"}],
+  "summary": "不超过120字的中文总结，说明这些消息如何影响股价"
+}
+注意：如果材料与该股关系很弱，sentiment 请靠近 0.5、confidence 给低分、stance 给"中性"。
+材料很多时，material_notes 只需挑出对股价影响最大的 12 条。`;
+  return { text, n: lines.length };
+}
+
+document.querySelectorAll(".quick button").forEach(b => {
+  b.onclick = () => {
+    document.getElementById("base").value = b.dataset.base;
+    document.getElementById("model").value = b.dataset.model;
+  };
+});
+
+const KEY_STORE = "llm_demo_key";
+const savedKey = localStorage.getItem(KEY_STORE);
+if (savedKey) { document.getElementById("key").value = savedKey; document.getElementById("remember").checked = true; }
+
+function extractJSON(text) {
+  let t = (text || "").trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, "");
+  try { return JSON.parse(t); } catch (e) { }
+  const i = t.indexOf("{"), j = t.lastIndexOf("}");
+  if (i >= 0 && j > i) { try { return JSON.parse(t.slice(i, j + 1)); } catch (e) { } }
+  return null;
+}
+const clamp = (v, lo, hi, d) => (v === null || v === undefined || isNaN(v)) ? d : Math.min(hi, Math.max(lo, Number(v)));
+
+document.getElementById("run").onclick = async () => {
+  const code = document.getElementById("stock").value;
+  const news = NEWS[code];
+  const key = document.getElementById("key").value.trim();
+  const model = document.getElementById("model").value.trim();
+  const base = document.getElementById("base").value.trim().replace(/\/+$/, "");
+  const st = document.getElementById("status"), out = document.getElementById("result");
+  out.innerHTML = "";
+
+  if (!news) { st.innerHTML = `<div class="err">这只股票没有新闻快照（只有 ${Object.keys(NEWS).join(" / ")}）。</div>`; return; }
+  if (!key || !base) { st.innerHTML = `<div class="err">请填写 API Key 和接口地址。</div>`; return; }
+
+  if (document.getElementById("remember").checked) localStorage.setItem(KEY_STORE, key);
+  else localStorage.removeItem(KEY_STORE);
+
+  const btn = document.getElementById("run");
+  btn.disabled = true;
+  const { text: prompt, n } = buildPrompt(code, news);
+  const t0 = Date.now();
+  st.innerHTML = `<div class="muted">正在调用 ${esc(model)} …（送入 ${n} 条材料，首次可能需要几秒）</div>`;
+
+  try {
+    const resp = await fetch(base + "/chat/completions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + key },
+      body: JSON.stringify({
+        model, messages: [{ role: "system", content: SYSTEM }, { role: "user", content: prompt }],
+        temperature: 0.2, max_tokens: 1600, stream: false
+      })
+    });
+    const raw = await resp.text();
+    if (!resp.ok) throw new Error(`HTTP ${resp.status}\n${raw.slice(0, 400)}`);
+    let data; try { data = JSON.parse(raw); } catch (e) { throw new Error("返回不是 JSON：\n" + raw.slice(0, 400)); }
+    const txt = (((data.choices || [])[0] || {}).message || {}).content || "";
+    const obj = extractJSON(txt);
+    if (!obj) throw new Error("模型返回无法解析为 JSON：\n" + txt.slice(0, 500));
+
+    const secs = ((Date.now() - t0) / 1000).toFixed(1);
+    const senti = clamp(obj.sentiment, 0, 1, 0.5), policy = clamp(obj.policy_impact, -1, 1, 0);
+    const conf = clamp(obj.confidence, 0, 1, 0.3);
+    const stance = ["偏多", "偏空", "中性"].includes(obj.stance) ? obj.stance
+      : (senti > 0.55 ? "偏多" : senti < 0.45 ? "偏空" : "中性");
+    const scls = stance === "偏多" ? "up" : stance === "偏空" ? "down" : "neu";
+    const arr = a => (Array.isArray(a) ? a : (a ? [a] : []));
+    const bg = obj.by_group || {};
+    const notes = arr(obj.material_notes).filter(x => x && (x.why || x.impact));
+
+    /* 和本地那次对比 */
+    const local = (CUR && CUR.news) || {};
+    const localPolSig = ((CUR && CUR.signals) || []).find(s => s.name === "大模型政策研判") || {};
+    const localPolicy = localPolSig.value;
+    const dS = local.sentiment != null ? senti - local.sentiment : null;
+    const dP = localPolicy != null ? policy - localPolicy : null;
+
+    st.innerHTML = "";
+    out.innerHTML = `<div class="card">
+      <h2>复跑结果 <span class="pill ${scls}">${esc(stance)}</span>
+        <span class="pill">${esc(model)} · ${secs}s · 实际送入 ${n} 条</span></h2>
+      <div class="kv">
+        <div><span>新闻情绪（0~1）</span><b>${senti.toFixed(2)}</b>
+          <div class="bar"><i style="width:${senti * 100}%;background:#c0392b"></i></div></div>
+        <div><span>政策影响（−1~1）</span><b>${policy >= 0 ? "+" : ""}${policy.toFixed(2)}</b>
+          <div class="bar"><i style="left:${policy >= 0 ? 50 : (policy + 1) / 2 * 100}%;
+            width:${Math.abs(policy) * 50}%;background:${policy >= 0 ? "#c0392b" : "#1e7f43"}"></i></div></div>
+        <div><span>置信度</span><b>${conf.toFixed(2)}</b>
+          <div class="bar"><i style="width:${conf * 100}%;background:#3b82f6"></i></div></div>
+        <div><span>个股新闻分 / 市场分</span><b style="font-size:15px">
+          ${bg.stock != null ? Number(bg.stock).toFixed(2) : "—"} / ${bg.market != null ? Number(bg.market).toFixed(2) : "—"}</b></div>
+      </div>
+      ${dS != null ? `<div class="note">与本地那次（${esc(local.model || "—")}）比：
+        情绪 ${local.sentiment} → ${senti.toFixed(2)}（${dS >= 0 ? "+" : ""}${dS.toFixed(2)}）${
+        dP != null ? `，政策 ${localPolicy.toFixed(2)} → ${policy.toFixed(2)}（${dP >= 0 ? "+" : ""}${dP.toFixed(2)}）` : ""}。
+        差异来自模型不同 + 采样随机 + 后端那次还附加了当日行情上下文。</div>` : ""}
+      <p style="margin:12px 0 4px"><b>结论</b></p><p class="muted">${esc(obj.summary || "")}</p>
+      <div class="flex">
+        <div><h3>关键驱动</h3><ul>${arr(obj.key_drivers).slice(0, 4).map(x => `<li>${esc(x)}</li>`).join("") || '<li class="muted">—</li>'}</ul></div>
+        <div><h3>风险</h3><ul>${arr(obj.risks).slice(0, 3).map(x => `<li>${esc(x)}</li>`).join("") || '<li class="muted">—</li>'}</ul></div>
+      </div>
+      ${notes.length ? `<h3>逐条材料影响（${notes.length} 条）</h3>
+        <table><thead><tr><th>#</th><th>方向</th><th>理由</th></tr></thead><tbody>` +
+        notes.map(x => `<tr><td>#${esc(x.i ?? "—")}</td>
+          <td class="${x.impact === "利多" ? "up" : x.impact === "利空" ? "down" : ""}">${esc(x.impact || "—")}</td>
+          <td style="text-align:left" class="muted">${esc(x.why || "")}</td></tr>`).join("") +
+        `</tbody></table>` : ""}
+      <details><summary>查看模型原始返回</summary>
+        <pre style="background:#f6f8fa;border:1px solid #edf0f3;border-radius:8px;padding:12px;
+          overflow-x:auto;font:12.5px/1.6 ui-monospace,Consolas,monospace">${esc(JSON.stringify(obj, null, 2))}</pre>
+      </details>
+    </div>`;
+    out.scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (e) {
+    const msg = String(e && e.message || e);
+    st.innerHTML = `<div class="err">调用失败：${esc(msg)}
+${msg === "Failed to fetch" ? "\n（常见原因：Key 错误 / 模型名不存在 / 该接口不允许浏览器直连 / 网络被拦截）" : ""}</div>`;
+  } finally {
+    btn.disabled = false;
+  }
+};
+</script>
+</body>
+</html>

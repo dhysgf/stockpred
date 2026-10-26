@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>宇树科技（688836.SH）股价预测 · 2026-10-23</title>
+<script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 0 0 60px; background: #f5f6f8; color: #1f2329;
+         font-family: -apple-system, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+         font-size: 15px; line-height: 1.7; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+  header { background: #fff; border-bottom: 1px solid #e6e8eb; padding: 26px 0 22px; margin-bottom: 22px; }
+  header h1 { margin: 0 0 6px; font-size: 25px; letter-spacing: .5px; }
+  .sub { color: #646a73; font-size: 13.5px; }
+  .tag { display: inline-block; padding: 2px 9px; border-radius: 4px; font-size: 12.5px;
+         margin-right: 6px; vertical-align: 2px; }
+  .tag-red { background: #fdeceb; color: #c9302c; border: 1px solid #f5c2c0; }
+  .tag-blue { background: #eaf2fd; color: #1a5fb4; border: 1px solid #c3d9f7; }
+  .tag-gray { background: #f2f3f5; color: #646a73; border: 1px solid #e0e2e5; }
+  .card { background: #fff; border: 1px solid #e6e8eb; border-radius: 8px; padding: 22px 24px; margin-bottom: 18px; }
+  .card > h2 { margin: 0 0 14px; font-size: 18px; padding-left: 11px; border-left: 4px solid #1a5fb4; }
+  .card > h3 { margin: 20px 0 8px; font-size: 15.5px; color: #2b313a; }
+  .verdict { background: linear-gradient(135deg,#fff7f6,#fff); border: 1px solid #f5c2c0; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); gap: 13px; margin: 14px 0 6px; }
+  .kpi { background: #fafbfc; border: 1px solid #e6e8eb; border-radius: 6px; padding: 13px 15px; }
+  .kpi .k { font-size: 12.5px; color: #8a9099; margin-bottom: 5px; }
+  .kpi .v { font-size: 21px; font-weight: 650; letter-spacing: .3px; }
+  .kpi .n { font-size: 12px; color: #8a9099; margin-top: 4px; }
+  .up { color: #d0392e; } .down { color: #1a8754; } .flat { color: #646a73; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0 4px; font-size: 13.6px; }
+  th, td { border: 1px solid #e6e8eb; padding: 7px 9px; text-align: right; }
+  th { background: #f5f6f8; font-weight: 600; color: #3a4048; text-align: center; white-space: nowrap; }
+  td:first-child, th:first-child { text-align: left; }
+  td.c, th.c { text-align: center; }
+  .note { font-size: 12.5px; color: #8a9099; margin-top: 8px; line-height: 1.6; }
+  .src { font-size: 12px; color: #8a9099; }
+  .chart { width: 100%; height: 380px; margin-top: 8px; }
+  .chart.s { height: 300px; }
+  ul, ol { padding-left: 22px; margin: 8px 0; }
+  li { margin-bottom: 6px; }
+  .callout { border-left: 3px solid #d0392e; background: #fdf7f6; padding: 11px 15px; margin: 12px 0; font-size: 14px; }
+  .callout.blue { border-left-color: #1a5fb4; background: #f5f9fe; }
+  .callout.amber { border-left-color: #c8860d; background: #fdfaf2; }
+  .foot { color: #8a9099; font-size: 12.5px; border-top: 1px solid #e6e8eb; padding-top: 14px; margin-top: 6px; }
+  .discl { background: #f2f3f5; border: 1px solid #e0e2e5; border-radius: 6px; padding: 13px 16px; font-size: 13px; color: #4a5058; }
+  details { background:#fafbfc; border:1px solid #e6e8eb; border-radius:6px; padding:10px 14px; margin:10px 0; }
+  summary { cursor: pointer; font-weight:600; font-size:14px; }
+  .sw { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:5px; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <h1>宇树科技（688836.SH）· 股价预测报告</h1>
+    <div class="sub">
+      <span class="tag tag-red">现价 624.00 元</span>
+      <span class="tag tag-red">+20.00% 涨停</span>
+      <span class="tag tag-blue">总市值 2,524 亿元</span>
+      <span class="tag tag-gray">数据截至 2026-10-23 收盘（A股已收盘）</span>
+      <span class="tag tag-gray">上市仅 42 个交易日</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+<!-- ============ 结论先行 ============ -->
+<div class="card verdict">
+  <h2>一句话结论</h2>
+  <p style="margin:0 0 10px;font-size:16.5px;">
+    624 元已经把 <b>2028 年的乐观预期一次性打满</b>（对 2028E 一致预期净利 15.1 亿仍对应 167 倍 PE），
+    <b>短线动量确实还在，但风险收益比已经明显不利</b>。
+    我的基准判断是：<b>未来 5–10 个交易日大概率在 570–680 元区间高位震荡并逐步消化涨幅</b>；
+    <b>10-29 三季报是最近的胜负手</b>——扣非能否转正决定它是继续冲高还是回归 450–500 元区间。
+  </p>
+  <div class="grid">
+    <div class="kpi"><div class="k">未来 1 个交易日（10-26）</div><div class="v up">647.7 元</div><div class="n">+3.8%，区间 594.8–700.6</div></div>
+    <div class="kpi"><div class="k">未来 5 个交易日（10-30）</div><div class="v flat">619.8 元</div><div class="n">-0.7%，区间 501.6–738.0</div></div>
+    <div class="kpi"><div class="k">未来 7 个交易日（11-03）</div><div class="v flat">614.0 元</div><div class="n">-1.6%，区间 474.1–753.8</div></div>
+    <div class="kpi"><div class="k">未来 30 个交易日（12-04）</div><div class="v up">655.2 元</div><div class="n">+5.0%，区间 365.7–944.7</div></div>
+    <div class="kpi"><div class="k">3–6 个月估值锚</div><div class="v down">269–370 元</div><div class="n">全部卖方目标价区间</div></div>
+    <div class="kpi"><div class="k">10 日内见顶概率</div><div class="v down">79.6%</div><div class="n">基线 54.3%，模型给出</div></div>
+  </div>
+  <div class="note">上方 4 个价格目标来自本项目量化模型实跑（RF + GBDT + LSTM 等权融合，301 只沪深300 成分股横截面训练）；
+  3–6 个月估值锚来自公开卖方目标价（摩根大通 / 美银 / 野村 / 建银国际，2026-08 至 2026-10，非一手来源，需核实原文）。
+  <b>模型对 30 日周期没有方向预测力</b>（大样本实测准确率 48.3%，低于随机），所以 30 日只给区间、不看方向。</div>
+</div>
+
+<!-- ============ 情景预测 ============ -->
+<div class="card">
+  <h2>我的三情景预测（含概率）</h2>
+  <table>
+    <tr>
+      <th style="width:110px;">情景</th><th style="width:66px;">概率</th>
+      <th>触发条件</th><th class="c">20 日后价格中枢</th><th class="c">极限位置</th>
+    </tr>
+    <tr>
+      <td><b>乐观</b><br><span class="src">情绪延续</span></td><td class="c"><b>20%</b></td>
+      <td>10-29 三季报扣非同比转正、人形出货超 3,700 台；OpenAI Robotics / 特斯拉 Optimus 继续催化，机器人板块整体走强</td>
+      <td class="c up"><b>700–780 元</b></td><td class="c">上看 850</td>
+    </tr>
+    <tr>
+      <td><b>中性</b><br><span class="src">高位震荡</span></td><td class="c"><b>50%</b></td>
+      <td>三季报营收增长但扣非继续下滑（延续 Q1 的 -52.55% 趋势）；无新增催化，缩量横盘消化 20cm 涨停</td>
+      <td class="c"><b>570–680 元</b></td><td class="c">上沿 700</td>
+    </tr>
+    <tr>
+      <td><b>悲观</b><br><span class="src">杀估值</span></td><td class="c"><b>30%</b></td>
+      <td>扣非利润同比继续下滑、"增收不增利"坐实；或三季报低于卖方预期；叠加解禁预期提前发酵 / 板块退潮</td>
+      <td class="c down"><b>440–520 元</b></td><td class="c">下看 404（10-15 低点）</td>
+    </tr>
+  </table>
+  <div class="callout">
+    <b>概率加权中枢约 590–620 元</b>，也就是说从 624 元算起，未来 1 个月<b>期望收益接近零、偏负</b>；
+    但波动率极大（ATR 5.9%、日波动 6.62%），单日 ±10% 属常态。
+    这不是"会跌"或"会涨"的判断，而是<b>收益分布极不对称</b>：上行需要连续催化，下行只需要一份不及预期的财报。
+  </div>
+</div>
+
+<!-- ============ K线图 ============ -->
+<div class="card">
+  <h2>上市以来走势与关键价位</h2>
+  <div id="kchart" class="chart"></div>
+  <div class="note">数据来源：新浪财经日 K（42 个交易日，2026-08-19 上市首日至 2026-10-23）。
+  上市首日开盘 1100 元、收 845 元，10-15 探底 404.03 元，10-23 涨停收 624 元。
+  标注线：MA20 动态支撑 474.5 元、量化模型 5 日下界 501.6 元、量化模型 30 日上界 944.7 元。</div>
+</div>
+
+<!-- ============ 目标价区间图 ============ -->
+<div class="card">
+  <h2>量化模型给出的价格区间</h2>
+  <div id="tchart" class="chart s"></div>
+  <div class="note">区间带宽 = max(多模型分歧, 日波动 6.62%×√h×1.28)。带宽越宽说明模型内部越不一致 / 波动率越高，
+  越不适合重仓。30 日带宽 ±46.4%，意味着"30 天后具体多少钱"这个问题的确定性极低——它只是把不确定性诚实地量化出来。</div>
+</div>
+
+<!-- ============ 量化模型拆解 ============ -->
+<div class="card">
+  <h2>模型内部：为什么"强烈买入"和"方向偏空"同时出现</h2>
+  <table>
+    <tr><th>信号</th><th class="c">取值</th><th class="c">权重</th><th class="c">贡献</th><th>依据</th></tr>
+    <tr><td>模型方向概率</td><td class="c down">-0.0532</td><td class="c">0.40</td><td class="c down">-0.0213</td><td class="src">1 日 51.8% / 5 日 44.4% / 7 日 46.8%</td></tr>
+    <tr><td>K 线形态</td><td class="c up">0.9230</td><td class="c">0.15</td><td class="c up">+0.1384</td><td class="src">形态分 0.96：10-23 早晨之星 + 看涨吞没 + 大阳线 + 突破 20 日新高</td></tr>
+    <tr><td>量能与资金</td><td class="c up">0.9256</td><td class="c">0.15</td><td class="c up">+0.1388</td><td class="src">量能分 0.96：量比 2.45、主力净流入 14.64 亿（占成交 27.84%）、超大单 +12.92 亿</td></tr>
+    <tr><td>大模型新闻研判</td><td class="c up">0.7520</td><td class="c">0.10</td><td class="c up">+0.0752</td><td class="src">qwen3.7-plus，情绪 0.90 / 置信 0.90（物理 AI 大会 + 十五五规划）</td></tr>
+    <tr><td>大模型政策研判</td><td class="c up">0.7520</td><td class="c">0.10</td><td class="c up">+0.0752</td><td class="src">qwen3.7-plus，政策影响 +0.80 / 置信 0.90</td></tr>
+    <tr><td>拐点风险</td><td class="c down">-0.1484</td><td class="c">0.10</td><td class="c down">-0.0148</td><td class="src">10 日内顶 79.6% / 底 67.2%</td></tr>
+    <tr style="background:#fafbfc;font-weight:600;"><td>合计</td><td class="c" colspan="2">综合分 +0.392</td><td class="c up" colspan="2">→ 强烈买入（置信 0.47，一致度 67%）</td></tr>
+  </table>
+  <div class="callout amber">
+    <b>这里必须诚实说明一件事：</b>综合分之所以是"强烈买入"，主要靠形态 + 量能 + 新闻（合计权重 0.40），
+    而<b>唯一有大样本统计支持的信号——模型方向概率（权重 0.40，实测 1 日 53.1% / 5 日 52.1% 准确率）——是偏空的</b>。
+    更重要的是：形态和量能本质是<b>动量指标</b>，在 20cm 涨停当日会给出最强读数，
+    也就是<b>信号在情绪最亢奋时最强、在情绪反转时最弱</b>。
+    这个"强烈买入"更适合理解为"趋势还没破坏"，而不是"值得在这里建仓"。
+  </div>
+  <details>
+    <summary>模型能力的诚实边界（点开看）</summary>
+    <ul style="margin-top:8px;">
+      <li><b>模型不知道估值</b>：所有特征都是价量 + 技术指标 + 情绪，没有一个 PE / PB / 市值因子，所以它对"624 元贵不贵"完全无话可说。</li>
+      <li><b>方向准确率接近随机</b>：本项目在 32,130 个横截面样本上实测，1 日 53.1%、5 日 52.1%、7 日 50.4%、<b>30 日 48.3%（显著低于随机）</b>。所以 7 日以上周期只给价格区间。</li>
+      <li><b>宇树上市仅 42 个交易日</b>，个股自身样本极少，模型靠 301 只沪深300 横截面训练获得泛化能力，再对单票预测。</li>
+      <li><b>置信度门控有效</b>：|prob-0.5| ≥ 0.15 的子集，7 日方向准确率可达 62.0%。本次 7 日概率 46.8%，<b>未达门控阈值 → 判"方向不明"</b>。</li>
+      <li><b>形态/量能的历史 IC 接近 0</b>（大样本实测），所以权重被压到 0.15，主要用于解释而非定方向。</li>
+    </ul>
+  </details>
+</div>
+
+<!-- ============ 基本面 ============ -->
+<div class="card">
+  <h2>基本面：一家很硬的公司，但利润质量在恶化</h2>
+  <table>
+    <tr><th>报告期</th><th>营收(亿元)</th><th>营收同比</th><th>归母净利(亿元)</th><th>扣非归母(亿元)</th><th>扣非同比</th><th>毛利率</th></tr>
+    <tr><td>2023 年</td><td>1.59</td><td class="c">—</td><td class="c down">-0.11</td><td class="c down">-0.18</td><td class="c">—</td><td class="c">44.22%</td></tr>
+    <tr><td>2024 年</td><td>3.93</td><td class="c up">+147%</td><td class="c up">0.955</td><td class="c">0.848</td><td class="c">扭亏</td><td class="c">—</td></tr>
+    <tr><td>2025 年</td><td>16.99</td><td class="c up">+332.6%</td><td class="c up">2.78</td><td class="c">5.91</td><td class="c up">大幅增长</td><td class="c">60.44%</td></tr>
+    <tr><td>2026 Q1</td><td>4.23</td><td class="c up">+68.5%</td><td class="c">0.50</td><td class="c">0.403</td><td class="c down">-52.55%</td><td class="c">—</td></tr>
+    <tr><td>2026 H1</td><td>11.52</td><td class="c up">+48.5%</td><td class="c up">2.74</td><td class="c">2.44</td><td class="c down">-19.34%</td><td class="c">56.01%</td></tr>
+  </table>
+  <div class="src" style="margin-top:6px;">数据来源：westock-data 财报接口（2026-06-30 合并利润表口径）；扣非口径为公司自述调整后数据。</div>
+
+  <h3>三个关键事实</h3>
+  <ul>
+    <li><b>硬件（小脑）确实全球领先</b>：电机 / 减速器 / 编码器 / 驱动板自研自产，外购件仅占总成本 10%–20%；2025 年人形出货 5,511 台、销量 5,215 台（2024 年仅 412 台）；毛利率 56%–60%；GitHub 累计开源 43 个项目。</li>
+    <li><b>但"大脑"是短板且正在吃利润</b>：自研 WMA / VLA 具身大模型尚未批量搭载在售整机；IPO 募资 42.02 亿中<b>20.22 亿（48%）</b>投给智能机器人模型研发。研发费用 2023–2025 仅 4,995 万 / 7,001 万 / 1.45 亿，三年合计约 2.6 亿，研发强度在硬科技公司中偏低，公司自己列为竞争劣势。</li>
+    <li><b>商业化结构还没起来</b>：人形机器人收入 <b>73.6% 来自科研教育</b>，工业 / 商业场景仅约 5%–9%。这意味着现价锚定的其实是"未来 3–5 年工业场景放量"这个还没发生的假设。创始人王兴兴本人说进家庭"快则两三年、慢则五到十年"。</li>
+  </ul>
+  <div class="callout blue">
+    <b>竞争格局已经恶化</b>：Counterpoint 口径 2026H1 宇树出货约 5,900–7,000 台、份额 31%，<b>被智元机器人（约 8,400–9,700 台、份额超 43%）反超，从全球第一滑至第二</b>。
+    同时人形 ASP 从 2023 年 59.34 万 → 2025 年 16.64 万，价格战已把毛利率打到 56%（同比 -4.2pct）。
+    换句话说：<b>它在用价格换份额，而份额没换到</b>。
+  </div>
+</div>
+
+<!-- ============ 估值 ============ -->
+<div class="card">
+  <h2>估值：624 元到底 price in 了什么</h2>
+  <div class="grid">
+    <div class="kpi"><div class="k">PE(TTM)</div><div class="v down">432 倍</div><div class="n">通用设备制造业近 1 月均值约 39.5 倍</div></div>
+    <div class="kpi"><div class="k">PB(LF)</div><div class="v down">28.7 倍</div><div class="n">每股净资产 7.91 元</div></div>
+    <div class="kpi"><div class="k">PS(TTM)</div><div class="v down">约 101 倍</div><div class="n">TTM 营收 20.76 亿</div></div>
+    <div class="kpi"><div class="k">现价对应 2027E PE</div><div class="v down">240 倍</div><div class="n">一致预期净利约 10.5 亿</div></div>
+    <div class="kpi"><div class="k">现价对应 2028E PE</div><div class="v down">167 倍</div><div class="n">一致预期净利约 15.1 亿</div></div>
+    <div class="kpi"><div class="k">资产负债率</div><div class="v up">25.1%</div><div class="n">货币资金 14.9 亿，有息负债不足 1 亿</div></div>
+  </div>
+  <div class="src" style="margin-top:6px;">数据来源：westock-data 行情 / 财务接口，2026-10-23。行业 PE 均值来自宇树 10-20 股票交易异常波动公告（公司披露）。</div>
+
+  <h3>反推：要让 624 元站得住，需要什么</h3>
+  <table>
+    <tr><th>若给这个倍数</th><th class="c">需要的归母净利</th><th class="c">对比一致预期 2028E 15.1 亿</th><th class="c">对应"多快才能做到"</th></tr>
+    <tr><td>200x PE</td><td class="c">12.6 亿元</td><td class="c">低于 2028E 一致预期</td><td class="c">2028 年前后可兑现</td></tr>
+    <tr><td>150x PE</td><td class="c">16.8 亿元</td><td class="c">略高于 2028E</td><td class="c">2028–2029 年</td></tr>
+    <tr><td>100x PE</td><td class="c">25.2 亿元</td><td class="c down">2028E 乐观值（东吴 22.4 亿）仍不够</td><td class="c">2029–2030 年</td></tr>
+    <tr><td>60x PE</td><td class="c">42.1 亿元</td><td class="c down">远超任何卖方预测</td><td class="c">2030 年之后</td></tr>
+  </table>
+  <div class="note">按 PS 口径同样紧绷：若给 46x PS（摩根大通给美国同业用的估值），需要营收 54.9 亿元，
+  比卖方 2027E 一致预期 45.9 亿元高出 20%；若给 30x PS，需要 84.1 亿元，缺口 83%。
+  <b>换句话说，现价要靠"2029–2030 年的盈利 + 市场继续给平台型溢价"两件事同时成立才守得住。</b></div>
+</div>
+
+<!-- ============ 机构分歧 ============ -->
+<div class="card">
+  <h2>最大的分歧点：没有任何一家目标价高于现价</h2>
+  <div id="ichart" class="chart s"></div>
+  <table>
+    <tr><th>机构</th><th class="c">评级</th><th class="c">目标价</th><th class="c">相对现价 624 元</th><th class="c">隐含 2027E PE</th><th class="c">日期</th></tr>
+    <tr><td>摩根大通</td><td class="c down">减持</td><td class="c">300 元</td><td class="c down">-51.9%</td><td class="c">116x</td><td class="c">2026-09 首次覆盖</td></tr>
+    <tr><td>美银证券</td><td class="c down">跑输大市</td><td class="c">350 元</td><td class="c down">-43.9%</td><td class="c">135x</td><td class="c">2026-10-02</td></tr>
+    <tr><td>野村证券</td><td class="c up">买入</td><td class="c">370 元</td><td class="c down">-40.7%</td><td class="c">143x</td><td class="c">2026-08-19</td></tr>
+    <tr><td>建银国际</td><td class="c">—</td><td class="c">269 元</td><td class="c down">-56.9%</td><td class="c">104x</td><td class="c">IPO 阶段</td></tr>
+    <tr><td>太平洋证券</td><td class="c up">增持</td><td class="c">未给</td><td class="c">—</td><td class="c">2027E 200x</td><td class="c">2026-10-22</td></tr>
+    <tr><td>华创证券</td><td class="c up">推荐</td><td class="c">未给</td><td class="c">—</td><td class="c">2027E 172x</td><td class="c">2026-09-29</td></tr>
+  </table>
+  <div class="src" style="margin-top:6px;">来源：机构研报汇总（westock 机构盈利预测接口 + 财经媒体报道，2026-08 至 2026-10）。
+  <b>研报与媒体数据为非一手来源，引用需核实原文。</b>目标价与评级由各机构自行给出，非本报告结论。</div>
+  <div class="callout">
+    <b>值得注意的是这个细节</b>：连给"买入""推荐"的机构（野村 370、华创推荐），目标价也都<b>低于现价 40% 以上</b>。
+    摩根大通的核心逻辑是"减持价格，不减持公司"——它认为公司质地没问题，但现价隐含 2027 财年 46 倍 PS 难以达成。
+    <b>换句话说，市场今天不是在为"业绩好"付钱，而是在为"叙事继续扩散"付钱。</b>这类定价对情绪逆转最脆弱。
+  </div>
+</div>
+
+<!-- ============ 事件日历 ============ -->
+<div class="card">
+  <h2>关键节点日历：最近的一个是 6 天后</h2>
+  <table>
+    <tr><th style="width:110px;">日期</th><th>事件</th><th>关注什么</th></tr>
+    <tr>
+      <td><b>2026-10-29</b><br><span class="src">6 天后</span></td>
+      <td>上市后首份财报（2026 三季报，未经审计，无业绩预告）</td>
+      <td><b>① 单季扣非能否转正</b>（Q1 同比 -52.55% 是最大问号）<b>② 工业/商业场景收入占比是否突破 10%</b>（现在约 5%–9%，全靠科研教育）<b>③ 毛利率能否企稳</b>、人形出货量是否达摩根士丹利预期约 3,700 台</td>
+    </tr>
+    <tr><td>2026-11 起</td><td>"宇创计划"生态孵化落地</td><td>5 年孵化 200 家生态企业；物理 AI 自进化 V1.0 大模型进展（目标 2027–2028 搭载进家庭）</td></tr>
+    <tr><td>2027-04-01</td><td>首批 6 项人形机器人国家标准实施</td><td>王兴兴为起草人之一；行业规范化利好头部</td></tr>
+    <tr><td>2027-02-19</td><td>解禁 226.94 万股（占总股本 0.56%）</td><td>规模小，影响有限</td></tr>
+    <tr>
+      <td><b>2027-08-19</b><br><span class="src">中期最大压力点</span></td>
+      <td><b>解禁 2.287 亿股，占总股本 56.56%</b></td>
+      <td>按 624 元估算解禁市值约 1,428 亿元。当前流通盘仅占总股本 7.4%，<b>小流通盘是这轮股价被放大的核心原因，也是后续最大的筹码压力</b></td>
+    </tr>
+  </table>
+</div>
+
+<!-- ============ 风险 ============ -->
+<div class="card">
+  <h2>风险清单（按杀伤力排序）</h2>
+  <ol>
+    <li><b>估值回归（杀伤力最大）</b>：432 倍 TTM PE vs 行业 39.5 倍，公司自己在 10-20 异动公告中已明确提示"若行业大规模商业化落地进度不及预期，存在估值回归的投资风险"。这不是理论风险，是公司自己写在公告里的。</li>
+    <li><b>10-29 三季报低于预期</b>：扣非利润已连续两个季度同比下滑（Q1 -52.55%、H1 -19.34%），而市值建立在 2028 年的乐观预期上。财报是这条链条上最近的引爆点。</li>
+    <li><b>竞争失守 + 价格战</b>：2026H1 出货份额被智元反超（31% vs 43%+），人形 ASP 三年从 59.34 万跌到 16.64 万，毛利率同比 -4.2pct。</li>
+    <li><b>份额仅 7.4% 的小流通盘 + 高换手</b>：10-23 换手率 28.08%、成交额 47.7 亿，股价对情绪的敏感度极高，双向波动都会被放大。</li>
+    <li><b>海外监管</b>：2026-07-28 FCC 将外国生产的先进机器人设备列入受管制清单，新机型无法取得 FCC 认证；美国收入占比已从 2023 年 18.39% 降至 13.30%（境外整体仍占 43.65%）。</li>
+    <li><b>筹码与解禁</b>：2027-08-19 解禁 56.56% 总股本；融资余额已从 10.46 亿升到 11.13 亿（10-19），杠杆资金在高位累积。</li>
+    <li><b>现金流质量</b>：2026H1 经营性现金流净额 2.32 亿、同比 -32.53%；存货周转率仅 0.98 次。</li>
+    <li><b>"大脑"短板</b>：具身大模型未量产搭载、境内发明专利仅 20 项。若无法在智能层创造价值，摩根大通的判断是可能被"降级为单纯的硬件供应商"。</li>
+  </ol>
+</div>
+
+<!-- ============ 结论 ============ -->
+<div class="card verdict">
+  <h2>最终判断</h2>
+  <ul style="font-size:15px;">
+    <li><b>短线（1–2 周）：</b>动量仍在，多头占优，但这是"强趋势 + 高波动 + 高不确定性"的组合，不是低风险机会。
+    10 日内见顶概率 79.6%，模型预计顶拐点在 <b>5–8 个交易日内</b>。不追高、不重仓。</li>
+    <li><b>关键价位：</b>上破 <b>738 元</b>（放量站上视为趋势确认）→ 下看 850；跌破 <b>501.6 元</b>（5 日模型下界）→ 加速回归 <b>474.5 元</b>（MA20）；极端情形回补 404 元缺口（10-15 低点）。</li>
+    <li><b>风控参考：</b>量化模型给出的止损位 <b>574.08 元</b>（-8%），ATR 止损 568.81 元。</li>
+    <li><b>中期（3–6 个月）：</b>全部公开卖方目标价 269–370 元。这是全市场最大的分歧点，也是最需要承受的波动来源。<b>我的中期判断偏空，倾向于向 450–500 元区间回归</b>，除非三季报证明扣非利润转正、工业场景占比开始突破 10%。</li>
+    <li><b>如果一定要参与：</b>把它当作<b>主题动量交易</b>而非价值投资，且仓位要按"可能一周腰斩一半"来设计——ATR 5.9%、日波动 6.62%、上市以来最大回撤超 60%（1100 → 404）。</li>
+  </ul>
+  <div class="callout">
+    <b>预期差在哪里：</b>市场普遍知道的是"人形机器人第一股、全球少数盈利、板块主题强"；
+    还没被充分定价（或被错误定价）的是<b>「扣非利润连续下滑 + 份额被反超 + 73.6% 收入来自科研教育」这三件事的严重性</b>。
+    多头在讲"2028 年才爆发"，空头在算"2027 年 PE 还有 240 倍"——<b>当两者都成立时，波动率就是唯一确定的答案</b>。
+  </div>
+</div>
+
+<div class="card">
+  <h2>技术分析图（模型输出）</h2>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+    <img src="forecast_688836.png" style="max-width:100%;border:1px solid #e6e8eb;border-radius:6px;" alt="预测图">
+  </div>
+  <div class="note">模型输出图：预测线（1/5/7/30 日）与历史 K 线。来源：本项目实跑生成。</div>
+</div>
+
+<div class="card">
+  <div class="foot">
+    <b>数据来源</b>：行情与 K 线 — 新浪财经（2026-10-23 收盘）；财务与估值指标、技术指标、资金流、龙虎榜、机构盈利预测 — westock-data / neodata（截至 2026-10-23）；
+    卖方目标价与评级 — 各机构研报汇总及财经媒体报道（2026-08 至 2026-10，<b>非一手来源，需核实原文</b>）；
+    量化价格预测 — 本项目模型实跑（RF + GBDT + LSTM 融合，301 只沪深300 成分股横截面训练，2026-10-23 18:00 执行）。
+    <br><br>
+    <b>方法论局限（诚实披露）</b>：模型对 30 日周期无方向预测力（横截面实测准确率 48.3%，n≈8,100，低于随机）；
+    1/5/7 日方向准确率分别为 53.1% / 52.1% / 50.4%（弱但统计显著）；形态与量能信号历史 IC 接近 0，仅作辅助；
+    模型不含任何估值因子，对"贵不贵"无判断能力；宇树上市仅 42 个交易日，个股样本极少。
+    <br><br>
+    <b>免责声明</b>：以上内容基于公开数据和量化分析，仅供参考，不构成投资建议。市场有风险，投资需谨慎。任何投资决策应结合个人风险承受能力、资金状况和投资目标独立判断，必要时咨询持牌专业机构。过往表现不预示未来收益。
+  </div>
+</div>
+
+</div>
+
+<script>
+var DATES = ["2026-08-19", "2026-08-20", "2026-08-21", "2026-08-24", "2026-08-25", "2026-08-26", "2026-08-27", "2026-08-28", "2026-08-31", "2026-09-01", "2026-09-02", "2026-09-03", "2026-09-04", "2026-09-07", "2026-09-08", "2026-09-09", "2026-09-10", "2026-09-11", "2026-09-14", "2026-09-15", "2026-09-16", "2026-09-17", "2026-09-18", "2026-09-21", "2026-09-22", "2026-09-23", "2026-09-24", "2026-09-28", "2026-09-29", "2026-09-30", "2026-10-08", "2026-10-09", "2026-10-12", "2026-10-13", "2026-10-14", "2026-10-15", "2026-10-16", "2026-10-19", "2026-10-20", "2026-10-21", "2026-10-22", "2026-10-23"];
+var OHLC = [[1100.0, 845.0, 800.08, 1100.0], [790.0, 687.0, 685.01, 790.0], [659.0, 672.41, 636.0, 706.98], [640.26, 603.08, 602.05, 642.0], [588.0, 602.8, 588.0, 625.89], [598.0, 591.53, 571.0, 614.44], [588.0, 615.03, 582.0, 615.05], [605.0, 585.0, 584.88, 605.0], [571.0, 564.9, 555.8, 571.3], [561.97, 571.1, 556.12, 591.0], [557.0, 546.02, 545.0, 562.84], [550.0, 550.45, 545.02, 565.5], [555.0, 530.3, 528.85, 557.88], [530.3, 536.35, 520.08, 542.66], [535.8, 523.68, 522.8, 539.91], [521.08, 513.93, 508.88, 524.99], [508.0, 498.55, 497.88, 508.0], [490.25, 477.12, 473.13, 497.87], [468.81, 470.0, 465.58, 479.41], [475.0, 469.8, 469.01, 483.0], [468.0, 474.28, 458.02, 477.78], [469.0, 503.26, 469.0, 509.02], [496.01, 514.98, 486.9, 522.22], [502.88, 494.85, 493.58, 506.99], [495.02, 489.2, 489.01, 502.1], [488.46, 490.97, 483.11, 495.0], [490.99, 488.0, 487.05, 499.78], [484.1, 459.65, 456.25, 484.1], [460.0, 451.02, 450.7, 461.5], [451.99, 450.4, 446.5, 459.9], [444.5, 427.8, 425.6, 446.0], [426.0, 432.0, 419.21, 434.99], [428.99, 421.29, 414.95, 428.99], [415.3, 436.63, 415.0, 436.87], [431.79, 419.88, 419.88, 431.79], [408.55, 405.1, 404.03, 418.49], [411.5, 426.98, 407.01, 442.68], [427.0, 495.92, 427.0, 508.99], [488.3, 526.03, 477.0, 556.0], [523.07, 515.0, 502.12, 526.6], [521.3, 520.0, 510.24, 544.0], [502.02, 624.0, 502.0, 624.0]];
+var VOLS = [25657935.0, 12629474.0, 7605734.0, 8128949.0, 5321525.0, 5582961.0, 6339783.0, 5674797.0, 4718840.0, 5151092.0, 4145915.0, 3091128.0, 3818006.0, 3538063.0, 3346943.0, 3217361.0, 2814683.0, 3627320.0, 2105015.0, 2526860.0, 2717434.0, 5865918.0, 5098709.0, 3715096.0, 2528426.0, 1686742.0, 2030847.0, 2634689.0, 1468957.0, 1641828.0, 2156240.0, 1890281.0, 1602723.0, 2350575.0, 1543535.0, 1588124.0, 3210282.0, 6586554.0, 8440929.0, 4785779.0, 5477269.0, 8449663.0];
+
+function ma(vals, n) {
+  var out = [];
+  for (var i = 0; i < vals.length; i++) {
+    if (i < n - 1) { out.push(null); continue; }
+    var s = 0;
+    for (var j = i - n + 1; j <= i; j++) { s += vals[j]; }
+    out.push(+(s / n).toFixed(2));
+  }
+  return out;
+}
+var CLOSES = OHLC.map(function (r) { return r[1]; });
+var ma5 = ma(CLOSES, 5), ma10 = ma(CLOSES, 10), ma20 = ma(CLOSES, 20);
+
+echarts.init(document.getElementById('kchart')).setOption({
+  title: { text: '日K（上市以来 42 个交易日）', left: 8, top: 4, textStyle: { fontSize: 14, fontWeight: 600, color: '#2b313a' } },
+  tooltip: { trigger: 'axis', axisPointer: { type: 'cross' } },
+  legend: { data: ['日K', 'MA5', 'MA10', 'MA20'], top: 6, right: 10, textStyle: { color: '#646a73' } },
+  grid: { left: 58, right: 58, top: 42, bottom: 62 },
+  xAxis: { type: 'category', data: DATES, axisLabel: { fontSize: 10.5, color: '#8a9099', rotate: 45 }, axisLine: { lineStyle: { color: '#d9dce0' } } },
+  yAxis: [
+    { type: 'value', scale: true, name: '股价(元)', nameTextStyle: { color: '#8a9099', fontSize: 11 }, splitLine: { lineStyle: { color: '#eef0f2' } }, axisLabel: { color: '#646a73', fontSize: 11 } },
+    { type: 'value', scale: true, name: '成交量(万股)', nameTextStyle: { color: '#8a9099', fontSize: 11 }, splitLine: { show: false }, axisLabel: { color: '#646a73', fontSize: 11 } }
+  ],
+  series: [
+    { name: '日K', type: 'candlestick', data: OHLC, itemStyle: { color: '#d0392e', color0: '#1a8754', borderColor: '#d0392e', borderColor0: '#1a8754' } },
+    { name: 'MA5', type: 'line', data: ma5, smooth: true, symbol: 'none', lineStyle: { width: 1.2, color: '#c8860d' } },
+    { name: 'MA10', type: 'line', data: ma10, smooth: true, symbol: 'none', lineStyle: { width: 1.2, color: '#1a5fb4' } },
+    { name: 'MA20', type: 'line', data: ma20, smooth: true, symbol: 'none', lineStyle: { width: 1.4, color: '#7048e8' } },
+    { name: '成交量', type: 'bar', yAxisIndex: 1, data: VOLS, itemStyle: { color: 'rgba(26,95,180,0.35)' } }
+  ],
+  graphic: [
+    { type: 'line', shape: { x1: 0, y1: 0, x2: 0, y2: 0 }, left: '68%', top: 60, invisible: true }
+  ],
+  markLine: undefined
+});
+
+var k2 = echarts.getInstanceByDom(document.getElementById('kchart'));
+k2.setOption({
+  series: [
+    { name: '日K', type: 'candlestick', data: OHLC, markLine: {
+        silent: true, symbol: 'none',
+        lineStyle: { type: 'dashed', color: '#c0392b' },
+        label: { fontSize: 10.5, color: '#c0392b', position: 'insideEndTop' },
+        data: [
+          { yAxis: 474.5, name: 'MA20支撑 474.5' },
+          { yAxis: 501.6, name: '5日模型下界 501.6' },
+          { yAxis: 738.0, name: '5日模型上界 738.0' }
+        ]
+      } }
+  ]
+});
+
+echarts.init(document.getElementById('tchart')).setOption({
+  title: { text: '量化模型目标价区间（横线=中位，竖线=下界~上界）', left: 8, top: 4, textStyle: { fontSize: 14, fontWeight: 600, color: '#2b313a' } },
+  tooltip: { trigger: 'axis', formatter: function (p) { return p[0].axisValue + '<br>' + p.map(function (x) { return x.seriesName + ': ' + x.value; }).join('<br>'); } },
+  legend: { data: ['中位目标价', '区间下界', '区间上界'], top: 6, right: 10, textStyle: { color: '#646a73' } },
+  grid: { left: 62, right: 24, top: 42, bottom: 46 },
+  xAxis: { type: 'category', data: ['1 日\n10-26', '5 日\n10-30', '7 日\n11-03', '30 日\n12-04'], axisLabel: { fontSize: 11.5, color: '#646a73' }, axisLine: { lineStyle: { color: '#d9dce0' } } },
+  yAxis: { type: 'value', name: '元', nameTextStyle: { color: '#8a9099', fontSize: 11 }, min: 300, max: 1000, splitLine: { lineStyle: { color: '#eef0f2' } }, axisLabel: { color: '#646a73', fontSize: 11 } },
+  series: [
+    { name: '中位目标价', type: 'bar', data: [647.7, 619.8, 613.96, 655.2], barWidth: 42, itemStyle: { color: 'rgba(26,95,180,0.85)', borderRadius: [4,4,0,0] },
+      label: { show: true, position: 'top', formatter: '{c}', fontSize: 11.5, color: '#2b313a' } },
+    { name: '区间下界', type: 'custom', renderItem: function (params, api) {
+        var idx = api.value(0), lo = api.coord([idx, api.value(1)])[1], hi = api.coord([idx, api.value(2)])[1];
+        var x = api.coord([idx, 0])[0];
+        return { type: 'line', shape: { x1: x, y1: lo, x2: x, y2: hi }, style: { stroke: '#c0392b', lineWidth: 3 } };
+      }, data: [[0, 594.84, 700.56], [1, 501.61, 737.99], [2, 474.11, 753.81], [3, 365.69, 944.71]], z: 5 },
+    { name: '区间上界', type: 'custom', renderItem: function (params, api) { return { type: 'line', style: { opacity: 0 } }; }, data: [[0,594.84,700.56],[1,501.61,737.99],[2,474.11,753.81],[3,365.69,944.71]] }
+  ]
+});
+
+echarts.init(document.getElementById('ichart')).setOption({
+  title: { text: '公开卖方目标价 vs 现价 624 元', left: 8, top: 4, textStyle: { fontSize: 14, fontWeight: 600, color: '#2b313a' } },
+  tooltip: { trigger: 'axis', formatter: '{b}<br>目标价 {c} 元' },
+  grid: { left: 92, right: 46, top: 42, bottom: 34 },
+  xAxis: { type: 'value', max: 700, name: '元', nameTextStyle: { color: '#8a9099', fontSize: 11 }, splitLine: { lineStyle: { color: '#eef0f2' } }, axisLabel: { color: '#646a73', fontSize: 11 } },
+  yAxis: { type: 'category', data: ['现价(10-23)', '太平洋·增持', '华创·推荐', '野村·买入', '美银·跑输', '摩根大通·减持', '建银国际'], axisLabel: { fontSize: 11.5, color: '#646a73' }, axisLine: { lineStyle: { color: '#d9dce0' } } },
+  series: [
+    { type: 'bar', data: [624, 0, 0, 370, 350, 300, 269], barWidth: 16,
+      itemStyle: { color: function (p) { return p.dataIndex === 0 ? '#d0392e' : '#8a9099'; }, borderRadius: [0,4,4,0] },
+      label: { show: true, position: 'right', fontSize: 11, color: '#2b313a', formatter: function (p) { return p.value === 0 ? '未给价' : p.value + ' 元'; } } }
+  ]
+});
+</script>
+</body>
+</html>
