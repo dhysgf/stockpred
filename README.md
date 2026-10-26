@@ -4,6 +4,8 @@
 
 本项目的立场：不吹"AI 预测股价"。凡是无法验证的信号，都标明它是辅助；凡是实测无效的周期，代码里直接不给方向。
 
+**在线演示**：<https://dhysgf.github.io/stockpred/>
+
 > ⚠️ 仅供技术研究与学习，**不构成任何投资建议**。股市有风险，盈亏自负。
 
 ---
@@ -49,14 +51,14 @@
 
 ## 在线演示
 
-`docs/` 是可直接部署到 GitHub Pages 的静态站（已配 `.nojekyll`）：
+👉 **<https://dhysgf.github.io/stockpred/>**（已通过 GitHub Pages 发布，源目录 `docs/`）
 
 - `docs/index.html` 落地页：输入任意 6 位代码在线生成报告、模型下拉可选
 - `docs/analysis.html` 逐项分析：8 个面板 + 预测图 / K 线图 + 浏览器端复跑研判
 - `docs/report_*.html` 本地实跑生成的报告（图片 base64 内嵌，单文件可分享）
 - `docs/analysis_snapshot.json` / `news_snapshot.json`：实跑结果与新闻快照
 
-启用方式：仓库 **Settings → Pages → Source 选 `Deploy from a branch` → 分支 `main` / 目录 `/docs`**。
+自行部署：仓库 **Settings → Pages → Source 选 `Deploy from a branch` → 分支 `main` / 目录 `/docs`**。
 
 > 网页端"Key 留空即用"依赖服务端已配置 `secrets.json`。纯静态部署时没有服务端，
 > 访客需要自己填大模型 Key 才能跑研判，其余量化分析无需 Key。
@@ -66,7 +68,7 @@
 ## 快速开始
 
 ```bash
-git clone https://github.com/<your-name>/stockpred.git
+git clone https://github.com/dhysgf/stockpred.git
 cd stockpred
 
 python -m venv .venv && source .venv/bin/activate   # Windows: .venv\Scripts\activate
