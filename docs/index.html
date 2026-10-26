@@ -67,12 +67,46 @@ thead th{background:#f6f8fa;color:#5b6470;font-weight:600}
     也可直接分享链接：<code>?code=600519</code> 追加在本页地址后即可自动跳转。
   </div>
   <details style="margin-top:12px">
-    <summary>本地版才有：指定大模型 / 自带 Key</summary>
-    <div class="muted" style="margin-top:8px">
+    <summary id="keySummary">静态站：Key 说明（本地版可在此直接设置）</summary>
+
+    <div id="keyLocalWrap" hidden>
+      <form method="post" action="settings">
+        <label>模型（带「免费额度」标记的不烧钱）</label>
+        <select name="model_choice" style="width:100%;max-width:520px;padding:9px 10px;
+                border:1px solid #dfe3e8;border-radius:8px;font-size:15px">
+          <option value="https://dashscope.aliyuncs.com/compatible-mode/v1|qwen-plus">千问 qwen-plus（百炼免费额度 100 万 tokens）</option>
+          <option value="https://dashscope.aliyuncs.com/compatible-mode/v1|qwen-flash">千问 qwen-flash（百炼免费额度，最快最省）</option>
+          <option value="https://dashscope.aliyuncs.com/compatible-mode/v1|qwen3.5-plus">千问 qwen3.5-plus（百炼免费额度）</option>
+          <option value="https://dashscope.aliyuncs.com/compatible-mode/v1|qwen3.7-plus">千问 qwen3.7-plus（百炼免费额度，研判更细）</option>
+          <option value="https://dashscope.aliyuncs.com/compatible-mode/v1|qwen-turbo">千问 qwen-turbo（百炼免费额度，偶尔限流）</option>
+          <option value="https://open.bigmodel.cn/api/paas/v4|glm-4-flash">智谱 GLM-4-flash（有免费额度，需注册）</option>
+          <option value="https://api.deepseek.com/v1|deepseek-chat">DeepSeek deepseek-chat（需充值，按量很便宜）</option>
+          <option value="http://localhost:11434/v1|qwen2.5">本地 Ollama（完全免费，需本机已装模型）</option>
+        </select>
+        <label style="display:block;margin-top:10px">API Key（<b>留空 = 用服务器内置 Key</b>；填了就用你的，优先级更高）</label>
+        <input type="password" name="api_key" placeholder="留空即可；或填自己的 sk-... / dashscope key"
+               style="width:100%;max-width:520px" autocomplete="off">
+        <div style="margin-top:10px">
+          <button type="submit">保存（只对本次会话生效）</button>
+          <button type="submit" formaction="verify"
+                  style="background:#3b82f6;margin-left:8px">测试连接</button>
+        </div>
+      </form>
+      <div class="tiny" style="margin-top:8px">
+        <b>默认不需要填 Key</b>：报告里的新闻/政策研判用服务器内置的 Key（读 <code>secrets.json</code> 或环境变量）。
+        你自己填的 Key 只放在服务器内存里（按浏览器会话隔离），重启即清空，不落盘、不进日志。<br>
+        <b>免费额度怎么用</b>：阿里云百炼对新用户每个模型各送 100 万 tokens（够跑上千次研判），
+        选上面标「免费额度」的模型即可；<code>qwen-turbo</code> 免费但偶尔被限流(429)，
+        限流时换 <code>qwen-plus</code> 或 <code>qwen3.7-plus</code>。
+      </div>
+    </div>
+
+    <div class="muted" id="keyStaticWrap" style="margin-top:8px">
       静态站点没有后端，无法替访客保管或使用「服务器内置 Key」。<br>
       · 想用大模型复跑研判：到 <a href="analysis.html">完整分析页</a>页尾填<b>你自己的 Key</b>（浏览器直连厂商，不经过任何服务器）；<br>
-      · 想用服务器内置 Key、按会话隔离、不落盘：本地运行 <code>python web.py</code> 后访问 <code>http://127.0.0.1:8010</code>，
-      那里有模型下拉与 Key 输入框，留空即用 <code>secrets.json</code> 里配置的 Key。
+      · 想在首页直接选模型 / 填 Key、并让报告生成时用「服务器内置 Key」：
+      本地运行 <code>python web.py</code> 后访问 <code>http://127.0.0.1:8010</code>，
+      这一栏会变成可用的表单（模型下拉 + Key 输入框 + 测试连接）。
     </div>
   </details>
 </div>
@@ -227,6 +261,13 @@ python web.py                                   # 打开网页版（支持填自
     document.getElementById("askBtn").textContent = "开始分析（约 3~5 分钟）";
     note.innerHTML = "报告页顶部有「← 返回主页」；同一标的在有效期内会复用已有报告，" +
       "要强制重跑在地址后加 <code>&refresh=1</code>。";
+    // 本地有后端：把「Key 说明」换成真正可用的模型 / Key 表单
+    var lw = document.getElementById("keyLocalWrap");
+    var sw = document.getElementById("keyStaticWrap");
+    if (lw) { lw.hidden = false; }
+    if (sw) { sw.hidden = true; }
+    var ks = document.getElementById("keySummary");
+    if (ks) { ks.textContent = "可选：指定大模型 / 自带 Key（不填就用服务器内置 Key）"; }
   }
 
   function open(code) {
