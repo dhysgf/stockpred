@@ -38,7 +38,22 @@ HOST = "127.0.0.1"
 PORT = 8010
 
 BASE = os.path.dirname(os.path.abspath(__file__))
-SITE = os.path.join(BASE, "deploy_site")       # 静态站（首页 / 完整分析页 / 预生成报告）
+
+
+def _pick_site_dir(base: str) -> str:
+    """静态站目录：优先 deploy_site（历史命名），回退 docs（GitHub Pages 目录）。
+
+    两个名字都认，是为了让本地 Web 与 Pages 共用同一份文件，
+    避免目录改名后本地「完整分析页 / 预生成报告」静默 404。
+    """
+    for name in ("deploy_site", "docs"):
+        cand = os.path.join(base, name)
+        if os.path.isdir(cand):
+            return cand
+    return os.path.join(base, "deploy_site")
+
+
+SITE = _pick_site_dir(BASE)    # 静态站（首页 / 完整分析页 / 预生成报告）
 # 报告复用上限（墙钟小时）。真正的"过期"判定用 _report_is_stale：
 # 比 **报告里的数据日** 和 **数据源最新可用交易日**，而不是文件年龄 ——
 # 周末/节假日里文件可能才 1 天却已经落后 2 个交易日（周一早上最典型）。
@@ -189,6 +204,12 @@ def _report_job(code: str, force: bool = False, api_key: str = "",
             env["LLM_OVERRIDE_KEY"] = api_key
         else:
             env.pop("LLM_OVERRIDE_KEY", None)
+        # 首次运行（clone 下来 output/ 不存在）时日志目录要先建出来，
+        # 否则 open(logp, "w") 会抛 FileNotFoundError 直接把请求掐断。
+        try:
+            os.makedirs(config.OUTPUT_DIR, exist_ok=True)
+        except OSError:
+            pass
         try:
             fh = open(logp, "w", encoding="utf-8")
         except PermissionError:
@@ -984,6 +1005,12 @@ class Handler(BaseHTTPRequestHandler):
             return
         force = (qs.get("refresh", ["0"])[0] == "1")
         rp = os.path.join(config.OUTPUT_DIR, f"report_{code}.html")
+        # output/ 里没有、但静态站里带了预生成报告时，直接走查看页复用，
+        # 不必为一个已经存在的报告再等 3~6 分钟重新训练（要强制重跑加 refresh=1）。
+        if not force and not os.path.exists(rp) and os.path.exists(
+                os.path.join(SITE, f"report_{code}.html")):
+            self._redirect(f"/report/view?code={code}")
+            return
 
         # 1) 已有且够新的报告：303 跳到查看页（等待页刷新到这儿就会自动变成报告）
         #    新鲜度按**数据日**判（见 _report_is_stale），不按文件年龄。
@@ -1050,6 +1077,17 @@ font-size:12px;white-space:pre-wrap;overflow-x:auto}}</style></head><body>
         parsed = urlparse(self.path)
         path = parsed.path
 
+        if path == "/__local":
+            # 哨兵端点：只存在于本地服务。docs/index.html 用它判断
+            # "当前是本地 Web（可真实训练）还是 GitHub Pages 静态站（只能看快照）"。
+            raw = b"local"
+            self.send_response(200)
+            self.send_header("Content-Type", "text/plain; charset=utf-8")
+            self.send_header("Content-Length", str(len(raw)))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(raw)
+            return
         if path == "/report":
             self._handle_report(parse_qs(parsed.query))
             return
@@ -1080,6 +1118,11 @@ font-size:12px;white-space:pre-wrap;overflow-x:auto}}</style></head><body>
             #   正确做法：**照常把旧报告给出来**（内容仍有用），但在页面顶部
             #   明确标注数据已落后多少天，并给出「重新分析」按钮，由用户主动点。
             vforce = (parse_qs(parsed.query).get("refresh", ["0"])[0] == "1")
+            if len(vcode) == 6 and not os.path.exists(vpath):
+                # 回退到静态站里的同代码报告（docs/report_XXX.html）
+                fallback = os.path.join(SITE, f"report_{vcode}.html")
+                if os.path.exists(fallback):
+                    vpath = fallback
             exists = len(vcode) == 6 and os.path.exists(vpath)
             if exists:
                 if vforce:
@@ -1173,6 +1216,13 @@ def main():
     ap = argparse.ArgumentParser(description="股价预测网页")
     ap.add_argument("--port", type=int, default=PORT)
     args = ap.parse_args()
+    # 首次运行把依赖目录建好（output 放报告、.cache 放行情缓存），
+    # 避免 clone 后第一次点击分析就因目录缺失报 500。
+    for d in (config.OUTPUT_DIR, getattr(config, "CACHE_DIR", ".cache")):
+        try:
+            os.makedirs(d, exist_ok=True)
+        except OSError:
+            pass
     srv = ThreadingHTTPServer((HOST, args.port), Handler)
     print(f"✓ 页面已启动： http://{HOST}:{args.port}  （Ctrl+C 退出）")
     try:

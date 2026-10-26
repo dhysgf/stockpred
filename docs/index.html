@@ -51,8 +51,8 @@ thead th{background:#f6f8fa;color:#5b6470;font-weight:600}
 </div>
 
 <div class="card ask" id="askWrap">
-  <h2>输入股票代码 → 打开对应分析</h2>
-  <div class="muted" style="margin-bottom:10px">
+  <h2 id="askTitle">输入股票代码 → 打开对应分析</h2>
+  <div class="muted" id="askDesc" style="margin-bottom:10px">
     本站是<b>静态站点</b>：量化模型（sklearn + PyTorch + 300 只股票池）无法在浏览器里运行，
     所以页面里的数值都是<b>本地实跑后固化的快照</b>，不是现算的。<br>
     输入代码后：<b>已生成过报告的标的</b>直接打开完整报告；<b>其余代码</b>跳到逐项分析页。
@@ -61,7 +61,7 @@ thead th{background:#f6f8fa;color:#5b6470;font-weight:600}
   <form id="askForm" novalidate>
     <input id="askCode" name="code" inputmode="numeric" autocomplete="off"
            placeholder="600519 / 000001 / 688836 / 任何 A 股 6 位代码">
-    <button type="submit">打开分析</button>
+    <button type="submit" id="askBtn">打开分析</button>
   </form>
   <div class="muted" id="askNote" style="margin-top:10px">
     也可直接分享链接：<code>?code=600519</code> 追加在本页地址后即可自动跳转。
@@ -197,13 +197,21 @@ python web.py                                   # 打开网页版（支持填自
 </div>
 </div>
 <script>
+/* 同一份 index.html 同时服务两种部署：
+   - 本地 web.py：存在 /__local 哨兵端点 → 提交后真实训练，走 /report?code=X
+   - GitHub Pages 静态站：哨兵 404 → 只能打开已固化的快照，走文件探测 */
 (function () {
   var form = document.getElementById("askForm");
   var input = document.getElementById("askCode");
   var note = document.getElementById("askNote");
+  var LOCAL = false;
+
+  var probe = fetch("__local", { cache: "no-store" })
+    .then(function (r) { LOCAL = r.ok; })
+    .catch(function () { LOCAL = false; });
 
   function normCode(v) {
-    var m = String(v || "").match(/\d{6}/);
+    var m = String(v || "").match(/[0-9]{6}/);
     return m ? m[0] : "";
   }
   function warn(msg) {
@@ -211,13 +219,24 @@ python web.py                                   # 打开网页版（支持填自
     note.style.color = "#b42318";
   }
 
+  function switchToLocalWording() {
+    document.getElementById("askTitle").textContent = "输入任意股票代码 → 在线生成完整报告";
+    document.getElementById("askDesc").innerHTML =
+      "本地版：沪深300 池内外的股票都支持（池外标的自动并入训练池，只作为预测对象）。" +
+      "每次分析都会<b>重新训练多模型并抓取当日行情与新闻</b>，约 3~6 分钟。";
+    document.getElementById("askBtn").textContent = "开始分析（约 3~5 分钟）";
+    note.innerHTML = "报告页顶部有「← 返回主页」；同一标的在有效期内会复用已有报告，" +
+      "要强制重跑在地址后加 <code>&refresh=1</code>。";
+  }
+
   function open(code) {
     if (!code) { warn("请输入 6 位股票代码，例如 600519。"); input.focus(); return; }
+    if (LOCAL) {
+      location.href = "report?code=" + code;
+      return;
+    }
     var report = "report_" + code + ".html";
-    var fell = function () {
-      location.href = "analysis.html?code=" + code;
-    };
-    // 先探测该标的是否已有预生成报告；静态站点只能靠文件是否存在来判断
+    var fell = function () { location.href = "analysis.html?code=" + code; };
     fetch(report, { method: "HEAD" })
       .then(function (r) { if (r.ok) { location.href = report; } else { fell(); } })
       .catch(fell);
@@ -226,20 +245,24 @@ python web.py                                   # 打开网页版（支持填自
   if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      open(normCode(input.value));
+      probe.then(function () { open(normCode(input.value)); });
     });
   }
 
-  var q = new URLSearchParams(location.search);
-  var qcode = q.get("code");
-  var wantRefresh = q.get("refresh") === "1";
-  if (qcode) {
+  probe.then(function () {
+    if (LOCAL) { switchToLocalWording(); }
+    var q = new URLSearchParams(location.search);
+    var qcode = q.get("code");
+    var wantRefresh = q.get("refresh") === "1";
+    if (!qcode) { return; }
     var c = normCode(qcode);
     if (!c) { warn("链接里的 code 不是 6 位数字：" + qcode); return; }
     input.value = c;
+    if (LOCAL) {
+      location.href = "report?code=" + c + (wantRefresh ? "&refresh=1" : "");
+      return;
+    }
     if (wantRefresh) {
-      // 本地版 web.py 的 /report?code=X&refresh=1 表示"强制重新训练"，
-      // 静态站点没有后端可训练，只能给快照，所以先把差异讲清楚再跳转。
       note.style.color = "#92400e";
       note.innerHTML = "这条链接带了 <code>refresh=1</code>（本地版表示“重新训练”）。" +
         "本站是静态快照站，<b>无法重新训练</b>，2.5 秒后打开 " + c + " 的现有报告" +
@@ -249,7 +272,7 @@ python web.py                                   # 打开网页版（支持填自
     } else {
       open(c);
     }
-  }
+  });
 })();
 </script>
 </body>
