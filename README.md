@@ -53,15 +53,20 @@
 
 👉 **<https://dhysgf.github.io/stockpred/>**（已通过 GitHub Pages 发布，源目录 `docs/`）
 
-- `docs/index.html` 落地页：输入任意 6 位代码在线生成报告、模型下拉可选
-- `docs/analysis.html` 逐项分析：8 个面板 + 预测图 / K 线图 + 浏览器端复跑研判
+- `docs/index.html` 落地页：输入 6 位代码 → 打开对应报告或分析页（支持 `?code=600519` 直接分享）
+- `docs/analysis.html` 逐项分析：8 个面板 + 预测图 / K 线图 + 浏览器端复跑研判（支持 `?code=`）
 - `docs/report_*.html` 本地实跑生成的报告（图片 base64 内嵌，单文件可分享）
 - `docs/analysis_snapshot.json` / `news_snapshot.json`：实跑结果与新闻快照
 
 自行部署：仓库 **Settings → Pages → Source 选 `Deploy from a branch` → 分支 `main` / 目录 `/docs`**。
 
-> 网页端"Key 留空即用"依赖服务端已配置 `secrets.json`。纯静态部署时没有服务端，
-> 访客需要自己填大模型 Key 才能跑研判，其余量化分析无需 Key。
+> 静态站没有后端：`/report?code=XXX&refresh=1` 是本地版 `web.py` 的路由形态，Pages 上不存在。
+> 改页面或加报告后跑一次 `python tools/check_docs_links.py`，它会拦下「站内绝对路径」与
+> 「目标文件不存在」两类必然 404 的链接（Pages 项目站根是 `/<repo>/`，`href="/xxx"` 会绕过前缀）。
+
+> 「Key 留空即用服务器内置 Key」只存在于**本地版** `python web.py`：它按浏览器会话隔离、
+> 内存存放、不落盘。纯静态部署没有服务端，访客必须在页面里自己填 Key 才能跑新闻研判，
+> 其余量化分析（价格 / 形态 / 量能 / 拐点 / 决策）不需要 Key。
 
 ---
 
@@ -331,6 +336,7 @@ stockpred/
   visualize.py            预测图（含拐点竖线与区间带）/ 回测图
 
 docs/                     GitHub Pages 静态展示站
+tools/check_docs_links.py 校验 docs/ 站内链接（拦绝对路径与缺失文件，防 404）
 examples/reports/         实跑生成的示例报告（HTML，单文件可分享）
 secrets.example.json      密钥模板（复制为 secrets.json 使用）
 ```
